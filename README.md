@@ -10,7 +10,7 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 
 ![image](https://github.com/user-attachments/assets/2010d94e-cddc-4285-9bce-4fcc89ca1cc0)
 
-![image](https://github.com/user-attachments/assets/f9d00df2-c28a-46d4-b552-a1597c538b21)
+![image](https://github.com/user-attachments/assets/b76dfc91-3cc8-404e-aa1d-a89055fccb3b)
 
 https://github.com/user-attachments/assets/10152caa-f5db-425b-8a3e-8a3f9ce17e8e
 
