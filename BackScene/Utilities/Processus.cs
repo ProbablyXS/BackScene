@@ -171,7 +171,7 @@ namespace BackScene.Utilities
         {
             if (string.IsNullOrWhiteSpace(wallpaperPath))
             {
-                Main.logsForm.LogsWriteLine("The wallpaper path is null, empty, or consists only of white-space characters.", true);
+                Main.logsForm.DisplayMessage("The wallpaper path is null, empty, or consists only of white-space characters.", true);
                 return false;
             }
 
@@ -190,13 +190,13 @@ namespace BackScene.Utilities
                     }
                     else
                     {
-                        Main.logsForm.LogsWriteLine("The wallpaper path exists but is empty.", true);
+                        Main.logsForm.DisplayMessage("The wallpaper path exists but is empty.", true);
                         return false;
                     }
                 }
                 else
                 {
-                    Main.logsForm.LogsWriteLine("The wallpaper path does not exist or is not a valid directory.", true);
+                    Main.logsForm.DisplayMessage("The wallpaper path does not exist or is not a valid directory.", true);
                     return false;
                 }
             }

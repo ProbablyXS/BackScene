@@ -17,6 +17,19 @@ namespace BackScene
 
         }
 
+        public void DisplayMessage(string message, bool error)
+        {
+            if (Main.settingsForm.ShowLogscheckBox.Checked)
+            {
+                LogsWriteLine(message, error);
+            }
+            else
+            {
+                MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
+
         public void LogsWriteLine(string message, bool error)
         {
 

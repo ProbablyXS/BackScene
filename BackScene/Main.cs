@@ -7,6 +7,7 @@ namespace BackScene
     public partial class Main : Form
     {
 
+        public static Main main;
         public static Settings settingsForm;
         public static Logs logsForm;
 
@@ -14,6 +15,7 @@ namespace BackScene
         {
             InitializeComponent();
 
+            main = this;
             settingsForm = settingsFrm;
             logsForm = logsFrm;
         }
@@ -84,7 +86,7 @@ namespace BackScene
         {
             if (Processus.CheckIfAlreadyStarted())
             {
-                MessageBox.Show("The process is currently running in the background. Please close it before proceeding.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Main.logsForm.DisplayMessage("The process is currently running in the background. Please close it before proceeding.", true);
                 return;
             }
 
@@ -146,6 +148,16 @@ namespace BackScene
         private void label2_Click(object sender, EventArgs e)
         {
             ClosingForm();
+        }
+
+        private void Main_DragDrop(object sender, DragEventArgs e)
+        {
+            settingsForm.textBox1_DragDrop(sender, e);
+        }
+
+        private void Main_DragEnter(object sender, DragEventArgs e)
+        {
+            settingsForm.textBox1_DragEnter(sender, e);
         }
     }
 }

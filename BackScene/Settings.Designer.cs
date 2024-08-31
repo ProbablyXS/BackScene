@@ -81,10 +81,11 @@ namespace BackScene
             // 
             this.textBox1.AllowDrop = true;
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Location = new System.Drawing.Point(105, 141);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(181, 20);
+            this.textBox1.Size = new System.Drawing.Size(353, 20);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "wallpaperPath";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);

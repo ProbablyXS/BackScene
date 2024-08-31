@@ -5,7 +5,9 @@ namespace BackScene
 {
 
     using System;
+    using System.Drawing;
     using System.IO;
+    using System.Media;
     using System.Windows.Forms;
 
     public partial class Settings : Form
@@ -120,7 +122,7 @@ namespace BackScene
             return false;
         }
 
-        private void textBox1_DragEnter(object sender, DragEventArgs e)
+        public void textBox1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -132,7 +134,7 @@ namespace BackScene
             }
         }
 
-        private void textBox1_DragDrop(object sender, DragEventArgs e)
+        public void textBox1_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
@@ -148,8 +150,50 @@ namespace BackScene
                 }
             }
 
-            Main.logsForm.LogsWriteLine("Wallpaper Folder has been modified", false);
+            SoundPlayer player = new SoundPlayer(Properties.Resources.Dropped);
+            player.Play();
 
+            string message = "Wallpaper Folder has been modified";
+
+            FadeOutLabel(message ,Main.main.label4);
+
+            Main.logsForm.LogsWriteLine(message, false);
+
+        }
+
+        private bool isFading = false;
+        private const int FadeDuration = 1000;
+        private const float OpacityDecrement = 1.0f / FadeDuration;
+
+        private async Task FadeOutLabel(string message, Label label)
+        {
+            if (isFading)
+                return;
+
+            isFading = true;
+
+            try
+            {
+                label.Text = message;
+                label.Visible = true;
+                float opacity = 1.0f;
+
+                for (int i = 0; i < FadeDuration; i += 50)
+                {
+                    opacity -= OpacityDecrement * (50.0f / FadeDuration);
+                    if (opacity < 0) opacity = 0;
+                    label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
+
+                    await Task.Delay(50);
+                }
+
+                label.Visible = false;
+                label.Text = "";
+            }
+            finally
+            {
+                isFading = false; // Reset the flag when done
+            }
         }
 
         private void Settings_Load(object sender, EventArgs e)
