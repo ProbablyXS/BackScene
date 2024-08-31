@@ -1,21 +1,12 @@
-﻿using System;
+﻿using BackScene.Utilities;
+using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace BackScene
 {
     public partial class Logs : Form
     {
-        // Import Windows API functions
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-
-        private const int WM_NCLBUTTONDOWN = 0x00A1;
-        private const int HT_CAPTION = 0x0002;
-
         public Logs()
         {
             InitializeComponent();
@@ -63,7 +54,7 @@ namespace BackScene
 
         private void Logs_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Main.settingsForm.checkBox1.Checked = false;
+            Main.settingsForm.ShowLogscheckBox.Checked = false;
             // Prevent the form from closing
             e.Cancel = true;
             // Hide the form instead of closing it
@@ -74,8 +65,8 @@ namespace BackScene
         {
             if (e.Button == MouseButtons.Left)
             {
-                ReleaseCapture();
-                SendMessage(this.Handle, WM_NCLBUTTONDOWN, (IntPtr)HT_CAPTION, IntPtr.Zero);
+                MovingForm.ReleaseCapture();
+                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
             }
         }
 

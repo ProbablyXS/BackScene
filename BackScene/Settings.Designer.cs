@@ -30,51 +30,52 @@ namespace BackScene
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.ShowLogscheckBox = new System.Windows.Forms.CheckBox();
+            this.CloseMinimizescheckBox = new System.Windows.Forms.CheckBox();
+            this.MuteAudiocheckBox = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.CleanMemorycheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.StartMinimizedcheckBox = new System.Windows.Forms.CheckBox();
+            this.PlayAtStartupcheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // checkBox1
+            // ShowLogscheckBox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(12, 12);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(75, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Show logs";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.ShowLogscheckBox.AutoSize = true;
+            this.ShowLogscheckBox.Checked = true;
+            this.ShowLogscheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ShowLogscheckBox.Location = new System.Drawing.Point(12, 12);
+            this.ShowLogscheckBox.Name = "ShowLogscheckBox";
+            this.ShowLogscheckBox.Size = new System.Drawing.Size(75, 17);
+            this.ShowLogscheckBox.TabIndex = 0;
+            this.ShowLogscheckBox.Text = "Show logs";
+            this.ShowLogscheckBox.UseVisualStyleBackColor = true;
+            this.ShowLogscheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // checkBox2
+            // CloseMinimizescheckBox
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(12, 58);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(100, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Close Minimizes";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.CloseMinimizescheckBox.AutoSize = true;
+            this.CloseMinimizescheckBox.Location = new System.Drawing.Point(12, 58);
+            this.CloseMinimizescheckBox.Name = "CloseMinimizescheckBox";
+            this.CloseMinimizescheckBox.Size = new System.Drawing.Size(99, 17);
+            this.CloseMinimizescheckBox.TabIndex = 1;
+            this.CloseMinimizescheckBox.Text = "Close minimizes";
+            this.CloseMinimizescheckBox.UseVisualStyleBackColor = true;
+            this.CloseMinimizescheckBox.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
-            // checkBox3
+            // MuteAudiocheckBox
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(314, 12);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(80, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Audio Mute";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.MuteAudiocheckBox.AutoSize = true;
+            this.MuteAudiocheckBox.Checked = true;
+            this.MuteAudiocheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MuteAudiocheckBox.Location = new System.Drawing.Point(314, 12);
+            this.MuteAudiocheckBox.Name = "MuteAudiocheckBox";
+            this.MuteAudiocheckBox.Size = new System.Drawing.Size(79, 17);
+            this.MuteAudiocheckBox.TabIndex = 2;
+            this.MuteAudiocheckBox.Text = "Mute audio";
+            this.MuteAudiocheckBox.UseVisualStyleBackColor = true;
+            this.MuteAudiocheckBox.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // textBox1
             // 
@@ -90,16 +91,18 @@ namespace BackScene
             this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
             this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
             // 
-            // checkBox4
+            // CleanMemorycheckBox
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(12, 81);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(174, 17);
-            this.checkBox4.TabIndex = 4;
-            this.checkBox4.Text = "Clean Memory (Recommanded)";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            this.CleanMemorycheckBox.AutoSize = true;
+            this.CleanMemorycheckBox.Checked = true;
+            this.CleanMemorycheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CleanMemorycheckBox.Location = new System.Drawing.Point(12, 81);
+            this.CleanMemorycheckBox.Name = "CleanMemorycheckBox";
+            this.CleanMemorycheckBox.Size = new System.Drawing.Size(173, 17);
+            this.CleanMemorycheckBox.TabIndex = 4;
+            this.CleanMemorycheckBox.Text = "Clean memory (Recommanded)";
+            this.CleanMemorycheckBox.UseVisualStyleBackColor = true;
+            this.CleanMemorycheckBox.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // label1
             // 
@@ -112,16 +115,29 @@ namespace BackScene
             this.label1.TabIndex = 5;
             this.label1.Text = "Wallpaper Folder:";
             // 
-            // checkBox5
+            // StartMinimizedcheckBox
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(12, 35);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(97, 17);
-            this.checkBox5.TabIndex = 6;
-            this.checkBox5.Text = "Start Minimized";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            this.StartMinimizedcheckBox.AutoSize = true;
+            this.StartMinimizedcheckBox.Location = new System.Drawing.Point(12, 35);
+            this.StartMinimizedcheckBox.Name = "StartMinimizedcheckBox";
+            this.StartMinimizedcheckBox.Size = new System.Drawing.Size(96, 17);
+            this.StartMinimizedcheckBox.TabIndex = 6;
+            this.StartMinimizedcheckBox.Text = "Start minimized";
+            this.StartMinimizedcheckBox.UseVisualStyleBackColor = true;
+            this.StartMinimizedcheckBox.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            // 
+            // PlayAtStartupcheckBox
+            // 
+            this.PlayAtStartupcheckBox.AutoSize = true;
+            this.PlayAtStartupcheckBox.Checked = true;
+            this.PlayAtStartupcheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.PlayAtStartupcheckBox.Location = new System.Drawing.Point(314, 35);
+            this.PlayAtStartupcheckBox.Name = "PlayAtStartupcheckBox";
+            this.PlayAtStartupcheckBox.Size = new System.Drawing.Size(93, 17);
+            this.PlayAtStartupcheckBox.TabIndex = 7;
+            this.PlayAtStartupcheckBox.Text = "Play at startup";
+            this.PlayAtStartupcheckBox.UseVisualStyleBackColor = true;
+            this.PlayAtStartupcheckBox.CheckedChanged += new System.EventHandler(this.PlayAtStartupcheckBox_CheckedChanged);
             // 
             // Settings
             // 
@@ -130,13 +146,14 @@ namespace BackScene
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(470, 166);
-            this.Controls.Add(this.checkBox5);
+            this.Controls.Add(this.PlayAtStartupcheckBox);
+            this.Controls.Add(this.StartMinimizedcheckBox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.checkBox4);
+            this.Controls.Add(this.CleanMemorycheckBox);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.MuteAudiocheckBox);
+            this.Controls.Add(this.CloseMinimizescheckBox);
+            this.Controls.Add(this.ShowLogscheckBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Settings";
@@ -153,11 +170,12 @@ namespace BackScene
 
         #endregion
         private System.Windows.Forms.TextBox textBox1;
-        public System.Windows.Forms.CheckBox checkBox1;
-        public System.Windows.Forms.CheckBox checkBox2;
-        public System.Windows.Forms.CheckBox checkBox3;
-        public System.Windows.Forms.CheckBox checkBox4;
+        public System.Windows.Forms.CheckBox ShowLogscheckBox;
+        public System.Windows.Forms.CheckBox CloseMinimizescheckBox;
+        public System.Windows.Forms.CheckBox MuteAudiocheckBox;
+        public System.Windows.Forms.CheckBox CleanMemorycheckBox;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.CheckBox checkBox5;
+        public System.Windows.Forms.CheckBox StartMinimizedcheckBox;
+        public System.Windows.Forms.CheckBox PlayAtStartupcheckBox;
     }
 }

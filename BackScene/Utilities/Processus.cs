@@ -8,13 +8,8 @@ namespace BackScene.Utilities
     {
         public static Process mpvProcess;
 
-        // Path to mpv executable
         public static string mpvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"tools\mpv\mpv.exe");
-
-        // Path to mpv executable
         public static string wpPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"tools\weebp\wp-headless.exe");
-
-        // Path to wallpaper folder
         public static string wallpaperPath;
 
         public static void StartMpvProcess()
@@ -27,10 +22,21 @@ namespace BackScene.Utilities
             {
                 try
                 {
-                    Main.settingsForm.Hide();
+                    if (!CheckMpvPath())
+                    {
+                        Main.logsForm.LogsWriteLine($"An error occurred: Check the MPV directory", true);
+                        return;
+                    }
+
+                    if (!CheckWpPath())
+                    {
+                        Main.logsForm.LogsWriteLine($"An error occurred: Check the WP directory", true);
+                        return;
+                    }
 
                     StartMpv();
                     SetAsWallpaper();
+                    Main.settingsForm.Hide();
                 }
                 catch (Exception ex)
                 {
@@ -64,17 +70,14 @@ namespace BackScene.Utilities
         //Second Method
         public static bool CheckIfMvpAlreadyStarted()
         {
-            // Get all processes with the name "mpv"
             Process[] processes = Process.GetProcessesByName("mpv");
 
-            // Check if any processes were found
             if (processes.Length > 0)
             {
                 foreach (Process process in processes)
                 {
                     try
                     {
-                        // Attempt to close the process
                         return true;
                     }
                     catch
@@ -93,22 +96,12 @@ namespace BackScene.Utilities
 
         private static void StartMpv()
         {
-            // Prepare the base arguments
             string baseArguments = "--player-operation-mode=pseudo-gui --force-window=yes shuffle=yes --terminal=no --loop-playlist=inf --input-ipc-server=\\\\.\\pipe\\mpvsocket";
-
-            // Add the wallpaper path
             string wallpaperArgument = $" {wallpaperPath}";
+            string additionalArguments = Main.settingsForm.MuteAudiocheckBox.Checked ? " --mute=yes" : string.Empty;
 
-            // Check if checkbox1 is checked and modify arguments accordingly
-            string additionalArguments = Main.settingsForm.checkBox3.Checked ? " --mute=yes" : string.Empty;
-
-            // Trim any extra spaces from the directory path
             string trimmedWallpaperArgument = wallpaperArgument.Trim();
-
-            // Ensure the directory path is enclosed in double quotes
             string formattedWallpaperArgument = $"\"{trimmedWallpaperArgument}\"";
-
-            // Concatenate the arguments
             string arguments = $"{baseArguments}{additionalArguments} {formattedWallpaperArgument}";
 
             mpvProcess = new Process
@@ -118,13 +111,13 @@ namespace BackScene.Utilities
                     FileName = mpvPath,
                     Arguments = arguments,
                     UseShellExecute = false,
-                    CreateNoWindow = false // Set to true if you don't want a window to be visible
+                    CreateNoWindow = false
                 }
             };
 
             mpvProcess.Start();
 
-            if (Main.settingsForm.checkBox4.Checked)
+            if (Main.settingsForm.CleanMemorycheckBox.Checked)
             {
                 _ = MemoryCleaner.StartCleanMem();
             }
@@ -146,8 +139,6 @@ namespace BackScene.Utilities
                 };
 
                 wpProcess.Start();
-
-                // Capture and display output and errors
 
                 try
                 {
@@ -178,20 +169,59 @@ namespace BackScene.Utilities
 
         public static bool CheckWallpaperPath()
         {
-            if (string.IsNullOrEmpty(wallpaperPath))
+            if (string.IsNullOrWhiteSpace(wallpaperPath))
             {
-                Main.logsForm.LogsWriteLine("The wallpaper path is null or empty.", true);
+                Main.logsForm.LogsWriteLine("The wallpaper path is null, empty, or consists only of white-space characters.", true);
                 return false;
             }
 
-            if (Directory.Exists(wallpaperPath))
+            try
             {
-                Main.logsForm.LogsWriteLine("The wallpaper path loaded.", false);
+                if (Directory.Exists(wallpaperPath))
+                {
+                    // Check if the directory is not empty
+                    var files = Directory.GetFiles(wallpaperPath);
+                    var directories = Directory.GetDirectories(wallpaperPath);
+
+                    if (files.Length > 0 || directories.Length > 0)
+                    {
+                        Main.logsForm.LogsWriteLine("The wallpaper path is valid and contains files or subdirectories.", false);
+                        return true;
+                    }
+                    else
+                    {
+                        Main.logsForm.LogsWriteLine("The wallpaper path exists but is empty.", true);
+                        return false;
+                    }
+                }
+                else
+                {
+                    Main.logsForm.LogsWriteLine("The wallpaper path does not exist or is not a valid directory.", true);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Main.logsForm.LogsWriteLine($"An error occurred while checking the wallpaper path: {ex.Message}", true);
+                return false;
+            }
+        }
+
+        public static bool CheckMpvPath()
+        {
+            if (File.Exists(mpvPath))
+            {
                 return true;
             }
-            else
+
+            return false;
+        }
+
+        public static bool CheckWpPath()
+        {
+            if (File.Exists(wpPath))
             {
-                Main.logsForm.LogsWriteLine("The wallpaper path does not exist or is not a valid directory.", true);
+                return true;
             }
 
             return false;
@@ -199,23 +229,19 @@ namespace BackScene.Utilities
 
         public static void CloseMpvIfRunning()
         {
-            // Get all processes with the name "mpv"
             Process[] processes = Process.GetProcessesByName("mpv");
 
-            // Check if any processes were found
             if (processes.Length > 0)
             {
                 foreach (Process process in processes)
                 {
                     try
                     {
-                        // Attempt to close the process
                         process.Kill();
                         Main.logsForm.LogsWriteLine($"Successfully terminated process: {process.ProcessName} (ID: {process.Id})", false);
                     }
                     catch (Exception ex)
                     {
-                        // Handle any exceptions that may occur (e.g., access denied)
                         Main.logsForm.LogsWriteLine($"Failed to terminate process: {process.ProcessName} (ID: {process.Id}). Exception: {ex.Message}", true);
                     }
                 }
@@ -226,7 +252,6 @@ namespace BackScene.Utilities
             }
         }
 
-        // Method to close the mpv process
         public static void CloseMpvProcess()
         {
 

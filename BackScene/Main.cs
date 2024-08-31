@@ -22,24 +22,26 @@ namespace BackScene
         {
             logsForm.LogsWriteLine(Application.ProductName + " [opened]", false);
 
-            if (settingsForm.checkBox5.Checked)
+            if (settingsForm.StartMinimizedcheckBox.Checked)
             {
                 logsForm.LogsWriteLine(Application.ProductName + " is minimized", false);
             }
 
             // open logs if is true
-            if (Main.settingsForm.checkBox1.Checked)
+            if (Main.settingsForm.ShowLogscheckBox.Checked)
             {
                 Main.logsForm.BringToFront();
                 Main.logsForm.Show();
             }
 
             // start minimized
-            if (Main.settingsForm.checkBox5.Checked)
+            if (Main.settingsForm.StartMinimizedcheckBox.Checked)
             {
                 this.WindowState = FormWindowState.Minimized;
                 this.ShowInTaskbar = false;
             }
+
+            if (Main.settingsForm.PlayAtStartupcheckBox.Checked) Processus.StartMpvProcess();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -60,21 +62,27 @@ namespace BackScene
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Check if the CheckBox is checked
+            e.Cancel = true;
+            ClosingForm();
+        }
+
+        public void ClosingForm()
+        {
             if (settingsForm.Close_Minimizes())
             {
-                //Prevent the form from closing
-                e.Cancel = true;
-                //Hide the form instead
                 this.Hide();
-
                 Main.logsForm.LogsWriteLine(this.Name + " [minimized]", false);
+            }
+            else
+            {
+                Processus.CloseMpvProcess();
+                Environment.Exit(0);
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (Processus.CheckIfAlreadyStarted()) 
+            if (Processus.CheckIfAlreadyStarted())
             {
                 MessageBox.Show("The process is currently running in the background. Please close it before proceeding.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -119,6 +127,25 @@ namespace BackScene
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
             this.Show();
+        }
+
+        private void Main_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                MovingForm.ReleaseCapture();
+                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
+            }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            ClosingForm();
         }
     }
 }

@@ -5,7 +5,6 @@ namespace BackScene
 {
 
     using System;
-    using System.Drawing;
     using System.IO;
     using System.Windows.Forms;
 
@@ -29,13 +28,11 @@ namespace BackScene
 
             while (_isRunning)
             {
-                checkBox1.Checked = iniConf.Read("show_logs", "BackScene") == "true";
-
-                checkBox2.Checked = iniConf.Read("close_minimizes", "BackScene") == "true";
-
-                checkBox3.Checked = iniConf.Read("audio_mute", "BackScene") == "true";
-
-                checkBox5.Checked = iniConf.Read("start_minimized", "BackScene") == "true";
+                ShowLogscheckBox.Checked = iniConf.Read("show_logs", "BackScene") == "true";
+                CloseMinimizescheckBox.Checked = iniConf.Read("close_minimizes", "BackScene") == "true";
+                MuteAudiocheckBox.Checked = iniConf.Read("mute_audio", "BackScene") == "true";
+                StartMinimizedcheckBox.Checked = iniConf.Read("start_minimized", "BackScene") == "true";
+                PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "BackScene") == "true";
 
                 textBox1.Text = iniConf.Read("wallpaperPath", "BackScene");
 
@@ -50,75 +47,56 @@ namespace BackScene
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
-            {
-                iniConf.Write("show_logs", "true", "BackScene");
+            var showLogs = ShowLogscheckBox.Checked ? "true" : "false";
+            iniConf.Write("show_logs", showLogs, "BackScene");
 
+            if (ShowLogscheckBox.Checked)
+            {
                 Main.logsForm.Show();
-                Main.logsForm.LogsWriteLine("Logs console [enabled]", false);
             }
             else
             {
-                iniConf.Write("show_logs", "false", "BackScene");
                 Main.logsForm.Hide();
-                Main.logsForm.LogsWriteLine("Logs console [disabled]", false);
             }
+
+            Main.logsForm.LogsWriteLine($"Console logs [{(ShowLogscheckBox.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox2.Checked)
-            {
-                iniConf.Write("close_minimizes", "true", "BackScene");
-                Main.logsForm.LogsWriteLine("Close Minimizes [enabled]", false);
-            }
-            else
-            {
-                iniConf.Write("close_minimizes", "false", "BackScene");
-                Main.logsForm.LogsWriteLine("Close Minimizes [disabled]", false);
-            }
+            var closeMinimizes = CloseMinimizescheckBox.Checked ? "true" : "false";
+            iniConf.Write("close_minimizes", closeMinimizes, "BackScene");
+            Main.logsForm.LogsWriteLine($"Close Minimizes [{(CloseMinimizescheckBox.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox3.Checked)
-            {
-                iniConf.Write("audio_mute", "true", "BackScene");
-                Main.logsForm.LogsWriteLine("Audio Mute [enabled]", false);
-            }
-            else
-            {
-                iniConf.Write("audio_mute", "false", "BackScene");
-                Main.logsForm.LogsWriteLine("Audio Mute [disabled]", false);
-            }
+            var muteAudio = MuteAudiocheckBox.Checked ? "true" : "false";
+            iniConf.Write("mute_audio", muteAudio, "BackScene");
+            Main.logsForm.LogsWriteLine($"Audio Mute [{(MuteAudiocheckBox.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox4.Checked)
-            {
-                iniConf.Write("clean_memory", "true", "BackScene");
-                Main.logsForm.LogsWriteLine("Clean Memory [enabled]", false);
-            }
-            else
-            {
-                iniConf.Write("clean_memory", "false", "BackScene");
-                Main.logsForm.LogsWriteLine("Clean Memory [disabled]", false);
-            }
+            var cleanMemory = CleanMemorycheckBox.Checked ? "true" : "false";
+            iniConf.Write("clean_memory", cleanMemory, "BackScene");
+            Main.logsForm.LogsWriteLine($"Clean Memory [{(CleanMemorycheckBox.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox5.Checked)
-            {
-                iniConf.Write("start_minimized", "true", "BackScene");
-                Main.logsForm.LogsWriteLine("Start Minimized [enabled]", false);
-            }
-            else
-            {
-                iniConf.Write("start_minimized", "false", "BackScene");
-                Main.logsForm.LogsWriteLine("Start Minimized [disabled]", false);
-            }
+            var startMinimized = StartMinimizedcheckBox.Checked ? "true" : "false";
+            iniConf.Write("start_minimized", startMinimized, "BackScene");
+            Main.logsForm.LogsWriteLine($"Start Minimized [{(StartMinimizedcheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+        }
+
+        private void PlayAtStartupcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var playAtStartup = PlayAtStartupcheckBox.Checked ? "true" : "false";
+            var logMessage = PlayAtStartupcheckBox.Checked ? "Enabled" : "Disabled";
+
+            iniConf.Write("play_at_startup", playAtStartup, "BackScene");
+            Main.logsForm.LogsWriteLine($"Play at startup [{logMessage}]", false);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -128,17 +106,14 @@ namespace BackScene
 
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Prevent the form from closing
             e.Cancel = true;
-            // Hide the form instead of closing it
             this.Hide();
-
             Main.logsForm.LogsWriteLine(Main.settingsForm.Name + " [closed]", false);
         }
 
         public bool Close_Minimizes()
         {
-            if (checkBox2.Checked)
+            if (CloseMinimizescheckBox.Checked)
             {
                 return true;
             }
@@ -161,13 +136,11 @@ namespace BackScene
         {
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
-                // Handle text drop
                 string text = (string)e.Data.GetData(DataFormats.Text);
                 iniConf.Write("wallpaperPath", text, "BackScene");
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // Handle file drop (e.g., read file content into the TextBox)
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 if (files.Length > 0)
                 {
