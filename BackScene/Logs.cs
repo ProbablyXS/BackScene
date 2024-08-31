@@ -12,11 +12,6 @@ namespace BackScene
             InitializeComponent();
         }
 
-        private void Logs_Load(object sender, EventArgs e)
-        {
-
-        }
-
         public void DisplayMessage(string message, bool error)
         {
             if (Main.settingsForm.ShowLogscheckBox.Checked)

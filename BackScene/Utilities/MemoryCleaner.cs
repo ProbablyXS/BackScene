@@ -7,13 +7,13 @@ namespace BackScene.Utilities
 {
     class MemoryCleaner
     {
-
         private static bool _isRunning;
 
         [DllImport("psapi.dll")]
         static extern int EmptyWorkingSet(IntPtr hProcess);
 
-        private static string processName = "mpv";
+        private static string mpvProcessName = "mpv";
+        private static string ownerProcessName = Process.GetCurrentProcess().ProcessName;
 
         public static async Task StartCleanMem()
         {
@@ -21,34 +21,40 @@ namespace BackScene.Utilities
 
             _isRunning = true;
 
-            Main.logsForm.LogsWriteLine($"Clean Memory for {processName.ToUpper()} process [started]", false);
+            Main.logsForm.LogsWriteLine($"Clean Memory for {mpvProcessName.ToUpper()} and {ownerProcessName.ToUpper()} processes [started]", false);
 
             while (_isRunning)
             {
                 await Task.Delay(30000);
 
-                Process[] processes = Process.GetProcessesByName(processName);
+                CleanMemoryForProcess(mpvProcessName);
+                CleanMemoryForProcess(ownerProcessName);
+            }
+        }
 
-                foreach (Process process in processes)
+        private static void CleanMemoryForProcess(string processName)
+        {
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            foreach (Process process in processes)
+            {
+                try
                 {
-                    try
-                    {
-                        Console.WriteLine($"Attempting to clean memory for process: {process.ProcessName} (PID: {process.Id})");
+                    Console.WriteLine($"Attempting to clean memory for process: {process.ProcessName} (PID: {process.Id})");
 
-                        // Empty the working set
-                        if (EmptyWorkingSet(process.Handle) != 0)
-                        {
-                            Console.WriteLine($"Successfully cleaned memory for process: {process.ProcessName} (PID: {process.Id})");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Failed to clean memory for process: {process.ProcessName} (PID: {process.Id})");
-                        }
-                    }
-                    catch (Exception ex)
+                    // Empty the working set
+                    if (EmptyWorkingSet(process.Handle) != 0)
                     {
-                        Console.WriteLine($"Error: {ex.Message}");
+                        Console.WriteLine($"Successfully cleaned memory for process: {process.ProcessName} (PID: {process.Id})");
                     }
+                    else
+                    {
+                        Console.WriteLine($"Failed to clean memory for process: {process.ProcessName} (PID: {process.Id})");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
                 }
             }
         }

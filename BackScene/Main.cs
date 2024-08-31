@@ -24,11 +24,6 @@ namespace BackScene
         {
             logsForm.LogsWriteLine(Application.ProductName + " [opened]", false);
 
-            if (settingsForm.StartMinimizedcheckBox.Checked)
-            {
-                logsForm.LogsWriteLine(Application.ProductName + " is minimized", false);
-            }
-
             // open logs if is true
             if (Main.settingsForm.ShowLogscheckBox.Checked)
             {
@@ -41,6 +36,7 @@ namespace BackScene
             {
                 this.WindowState = FormWindowState.Minimized;
                 this.ShowInTaskbar = false;
+                logsForm.LogsWriteLine(Application.ProductName + " is minimized", false);
             }
 
             if (Main.settingsForm.PlayAtStartupcheckBox.Checked) Processus.StartMpvProcess();
@@ -73,7 +69,7 @@ namespace BackScene
             if (settingsForm.Close_Minimizes())
             {
                 this.Hide();
-                Main.logsForm.LogsWriteLine(this.Name + " [minimized]", false);
+                Main.logsForm.LogsWriteLine(this.Name + " [Minimized]", false);
             }
             else
             {
@@ -90,23 +86,18 @@ namespace BackScene
                 return;
             }
 
-            // Check if the settings form instance already exists
             if (settingsForm == null || settingsForm.IsDisposed)
             {
-                // Create a new instance if it doesn't exist or has been disposed
                 settingsForm = new Settings();
             }
 
-            // Check if the settings form is currently active
             if (settingsForm.Visible)
             {
-                // The form is already open
-                settingsForm.BringToFront(); // Bring the existing form to the front
+                settingsForm.BringToFront();
             }
             else
             {
-                logsForm.LogsWriteLine(settingsForm.Name + " [opened]", false);
-                // Show the settings form if it is not currently visible
+                logsForm.LogsWriteLine(settingsForm.Name + " [Opened]", false);
                 settingsForm.Show();
             }
         }

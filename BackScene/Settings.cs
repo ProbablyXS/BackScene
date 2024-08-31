@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 namespace BackScene
 {
-
+    using Microsoft.Win32;
     using System;
+    using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Media;
@@ -13,6 +14,10 @@ namespace BackScene
     public partial class Settings : Form
     {
         private bool _isRunning;
+
+        private bool isFading = false;
+        private const int FadeDuration = 1000;
+        private const float OpacityDecrement = 1.0f / FadeDuration;
 
         Clsini iniConf = new Clsini(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"config.ini"));
 
@@ -33,8 +38,10 @@ namespace BackScene
                 ShowLogscheckBox.Checked = iniConf.Read("show_logs", "BackScene") == "true";
                 CloseMinimizescheckBox.Checked = iniConf.Read("close_minimizes", "BackScene") == "true";
                 MuteAudiocheckBox.Checked = iniConf.Read("mute_audio", "BackScene") == "true";
+                CleanMemorycheckBox.Checked = iniConf.Read("clean_memory", "BackScene") == "true";
                 StartMinimizedcheckBox.Checked = iniConf.Read("start_minimized", "BackScene") == "true";
                 PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "BackScene") == "true";
+                StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
 
                 textBox1.Text = iniConf.Read("wallpaperPath", "BackScene");
 
@@ -101,6 +108,59 @@ namespace BackScene
             Main.logsForm.LogsWriteLine($"Play at startup [{logMessage}]", false);
         }
 
+        private void StartWithWindowscheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var playAtStartup = StartWithWindowscheckBox.Checked ? "true" : "false";
+            var logMessage = StartWithWindowscheckBox.Checked ? "Enabled" : "Disabled";
+
+            string exePath = Process.GetCurrentProcess().MainModule.FileName;
+            string appName = Application.ProductName;
+
+            if (playAtStartup == "true")
+            {
+                SetStartup(appName, exePath, true);
+            }
+            else
+            {
+                SetStartup(appName, exePath, false);
+            }
+
+            iniConf.Write("start_with_windows", playAtStartup, "BackScene");
+            Main.logsForm.LogsWriteLine($"Start with windows [{logMessage}]", false);
+        }
+
+        public static void SetStartup(string appName, string exePath, bool add)
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                if (key == null)
+                {
+                    throw new InvalidOperationException("Unable to access registry key.");
+                }
+
+                if (add)
+                {
+                    // Add the application to startup
+                    key.SetValue(appName, exePath);
+                    Console.WriteLine($"{appName} has been added to startup.");
+                }
+                else
+                {
+                    // Remove the application from startup
+                    if (key.GetValue(appName) != null)
+                    {
+                        key.DeleteValue(appName);
+                        Console.WriteLine($"{appName} has been removed from startup.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{appName} was not found in startup.");
+                    }
+                }
+
+            }
+        }
+
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             Processus.wallpaperPath = textBox1.Text.Trim();
@@ -155,17 +215,13 @@ namespace BackScene
 
             string message = "Wallpaper Folder has been modified";
 
-            FadeOutLabel(message ,Main.main.label4);
+            FadeOutLabel(message, Main.main.label4);
 
             Main.logsForm.LogsWriteLine(message, false);
 
         }
 
-        private bool isFading = false;
-        private const int FadeDuration = 1000;
-        private const float OpacityDecrement = 1.0f / FadeDuration;
-
-        private async Task FadeOutLabel(string message, Label label)
+        public async Task FadeOutLabel(string message, Label label)
         {
             if (isFading)
                 return;
@@ -199,6 +255,20 @@ namespace BackScene
         private void Settings_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void Main_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                MovingForm.ReleaseCapture();
+                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
+            }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Media;
 
 namespace BackScene.Utilities
 {
@@ -36,6 +37,9 @@ namespace BackScene.Utilities
 
                     StartMpv();
                     SetAsWallpaper();
+
+                    SoundPlayer player = new SoundPlayer(Properties.Resources.Dropped);
+                    player.Play();
                     Main.settingsForm.Hide();
                 }
                 catch (Exception ex)
@@ -96,7 +100,7 @@ namespace BackScene.Utilities
 
         private static void StartMpv()
         {
-            string baseArguments = "--player-operation-mode=pseudo-gui --force-window=yes shuffle=yes --terminal=no --loop-playlist=inf --input-ipc-server=\\\\.\\pipe\\mpvsocket";
+            string baseArguments = "--player-operation-mode=pseudo-gui --force-window=yes shuffle=yes --terminal=no --loop-playlist=inf --hwdec=auto --border=no --input-ipc-server=\\\\.\\pipe\\mpvsocket";
             string wallpaperArgument = $" {wallpaperPath}";
             string additionalArguments = Main.settingsForm.MuteAudiocheckBox.Checked ? " --mute=yes" : string.Empty;
 
@@ -122,7 +126,9 @@ namespace BackScene.Utilities
                 _ = MemoryCleaner.StartCleanMem();
             }
 
-            Main.logsForm.LogsWriteLine(mpvProcess.ProcessName.ToUpper() + " process [started]", false);
+            string message = mpvProcess.ProcessName.ToUpper() + " process [started]";
+            Main.settingsForm.FadeOutLabel(message, Main.main.label4);
+            Main.logsForm.LogsWriteLine(message, false);
         }
 
         private static void SetAsWallpaper()
@@ -185,7 +191,6 @@ namespace BackScene.Utilities
 
                     if (files.Length > 0 || directories.Length > 0)
                     {
-                        Main.logsForm.LogsWriteLine("The wallpaper path is valid and contains files or subdirectories.", false);
                         return true;
                     }
                     else

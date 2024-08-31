@@ -58,13 +58,12 @@ namespace BackScene
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(707, 350);
             this.Controls.Add(this.richTextBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Logs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Logs";
+            this.Text = "BackScene: Console Logs";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Logs_FormClosing);
-            this.Load += new System.EventHandler(this.Logs_Load);
             this.ResumeLayout(false);
 
         }

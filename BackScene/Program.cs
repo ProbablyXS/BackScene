@@ -24,6 +24,7 @@ namespace BackScene
 
             Main main = new Main(settings, logs);
 
+            logs.LogsWriteLine($"Checking [config.ini]", false);
             settings.StartConfigCheck();
 
             Application.Run(main);

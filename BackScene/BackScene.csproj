@@ -108,9 +108,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="icon.ico" />
     <None Include="Resources\sound\Dropped.wav" />
   </ItemGroup>
