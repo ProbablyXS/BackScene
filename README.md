@@ -4,6 +4,9 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 
 ![GitHub Release](https://img.shields.io/github/v/release/ProbablyXS/BackScene)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ProbablyXS/BackScene/total)
+[![GitHub issues](https://img.shields.io/github/issues/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/issues)
+[![GitHub forks](https://img.shields.io/github/forks/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/network)
+[![GitHub stars](https://img.shields.io/github/stars/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/stargazers)
 
 ## Information
 
