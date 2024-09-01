@@ -2,6 +2,9 @@
 
 BackScene is a tool designed to display video wallpapers on your Windows desktop background using MPV and weebp.
 
+![GitHub Release](https://img.shields.io/github/v/release/ProbablyXS/BackScene)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ProbablyXS/BackScene/total)
+
 ## Information
 
 - **Drag and drop to change the wallpaper folder.**
