@@ -1,5 +1,6 @@
 ﻿using BackScene.Utilities;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace BackScene
@@ -22,7 +23,7 @@ namespace BackScene
 
         private void Main_Load(object sender, EventArgs e)
         {
-            logsForm.LogsWriteLine(Application.ProductName + " [opened]", false);
+            logsForm.LogsWriteLine(Application.ProductName + " [Opened]", false);
 
             // open logs if is true
             if (Main.settingsForm.ShowLogscheckBox.Checked)
@@ -80,6 +81,11 @@ namespace BackScene
 
         private void button1_Click(object sender, EventArgs e)
         {
+            OpenSettings();
+        }
+
+        private void OpenSettings()
+        {
             if (Processus.CheckIfAlreadyStarted())
             {
                 Main.logsForm.DisplayMessage("The process is currently running in the background. Please close it before proceeding.", true);
@@ -98,7 +104,7 @@ namespace BackScene
             else
             {
                 logsForm.LogsWriteLine(settingsForm.Name + " [Opened]", false);
-                settingsForm.Show();
+                settingsForm.ShowDialog();
             }
         }
 
@@ -149,6 +155,26 @@ namespace BackScene
         private void Main_DragEnter(object sender, DragEventArgs e)
         {
             settingsForm.textBox1_DragEnter(sender, e);
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/ProbablyXS/BackScene");
+        }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Processus.StartMpvProcess();
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Processus.CloseMpvProcess();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BackScene
     {
         private bool _isRunning;
 
-        private bool isFading = false;
+        public static bool isFading = false;
         private const int FadeDuration = 1000;
         private const float OpacityDecrement = 1.0f / FadeDuration;
 
@@ -28,7 +28,6 @@ namespace BackScene
 
         public async void StartConfigCheck()
         {
-
             if (_isRunning) return;
 
             _isRunning = true;
@@ -43,9 +42,10 @@ namespace BackScene
                 PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "BackScene") == "true";
                 StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
 
-                textBox1.Text = iniConf.Read("wallpaperPath", "BackScene");
+                Processus.wallpaperPath = iniConf.Read("wallpaperPath", "BackScene");
+                textBox1.Text = Processus.wallpaperPath;
 
-                await Task.Delay(10);
+                await Task.Delay(1000);
             }
         }
 
@@ -161,11 +161,6 @@ namespace BackScene
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            Processus.wallpaperPath = textBox1.Text.Trim();
-        }
-
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
@@ -196,37 +191,42 @@ namespace BackScene
 
         public void textBox1_DragDrop(object sender, DragEventArgs e)
         {
+            string folderPath = "";
+
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
-                string text = (string)e.Data.GetData(DataFormats.Text);
-                iniConf.Write("wallpaperPath", text, "BackScene");
+                folderPath = (string)e.Data.GetData(DataFormats.Text);
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 if (files.Length > 0)
                 {
-                    iniConf.Write("wallpaperPath", files[0], "BackScene");
+                    folderPath = files[0];
                 }
             }
 
-            SoundPlayer player = new SoundPlayer(Properties.Resources.Dropped);
-            player.Play();
+            if (!Processus.CheckWallpaperPath(folderPath)) return;
 
-            string message = "Wallpaper Folder has been modified";
+            iniConf.Write("wallpaperPath", folderPath, "BackScene");
 
-            FadeOutLabel(message, Main.main.label4);
+            Processus.wallpaperPath = folderPath;
 
+            var message = "Wallpaper Folder has been modified";
+            FadeOutLabel(message, Main.main.label4, false);
             Main.logsForm.LogsWriteLine(message, false);
 
         }
 
-        public async Task FadeOutLabel(string message, Label label)
+        public async Task FadeOutLabel(string message, Label label, bool error)
         {
             if (isFading)
                 return;
 
             isFading = true;
+
+            var player = new SoundPlayer(error ? Properties.Resources.Rejected : Properties.Resources.Dropped);
+            player.Play();
 
             try
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Media;
 
 namespace BackScene.Utilities
@@ -17,7 +18,7 @@ namespace BackScene.Utilities
         {
 
             if (CheckIfMvpAlreadyStarted()) return;
-            if (!CheckWallpaperPath()) return;
+            if (!CheckWallpaperPath(wallpaperPath)) return;
 
             if (mpvProcess == null || mpvProcess.HasExited)
             {
@@ -25,21 +26,23 @@ namespace BackScene.Utilities
                 {
                     if (!CheckMpvPath())
                     {
-                        Main.logsForm.LogsWriteLine($"An error occurred: Check the MPV directory", true);
+                        string message = "An error occurred: Check the MPV directory";
+                        Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+                        Main.logsForm.LogsWriteLine(message, true);
                         return;
                     }
 
                     if (!CheckWpPath())
                     {
-                        Main.logsForm.LogsWriteLine($"An error occurred: Check the WP directory", true);
+                        string message = "An error occurred: Check the WP directory";
+                        Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+                        Main.logsForm.LogsWriteLine(message, true);
                         return;
                     }
 
                     StartMpv();
                     SetAsWallpaper();
 
-                    SoundPlayer player = new SoundPlayer(Properties.Resources.Dropped);
-                    player.Play();
                     Main.settingsForm.Hide();
                 }
                 catch (Exception ex)
@@ -127,7 +130,7 @@ namespace BackScene.Utilities
             }
 
             string message = mpvProcess.ProcessName.ToUpper() + " process [started]";
-            Main.settingsForm.FadeOutLabel(message, Main.main.label4);
+            Main.settingsForm.FadeOutLabel(message, Main.main.label4, false);
             Main.logsForm.LogsWriteLine(message, false);
         }
 
@@ -173,43 +176,57 @@ namespace BackScene.Utilities
             }
         }
 
-        public static bool CheckWallpaperPath()
+        public static bool CheckWallpaperPath(string path)
         {
-            if (string.IsNullOrWhiteSpace(wallpaperPath))
+            if (string.IsNullOrWhiteSpace(path))
             {
-                Main.logsForm.DisplayMessage("The wallpaper path is null, empty, or consists only of white-space characters.", true);
-                return false;
+                return RejectAndLog("The wallpaper path is null, empty, or consists only of white-space characters.");
+            }
+
+            if (!Directory.Exists(path))
+            {
+                return RejectAndLog("The wallpaper path does not exist or is not a valid directory.");
             }
 
             try
             {
-                if (Directory.Exists(wallpaperPath))
-                {
-                    // Check if the directory is not empty
-                    var files = Directory.GetFiles(wallpaperPath);
-                    var directories = Directory.GetDirectories(wallpaperPath);
+                string[] validExtensions = { ".mp4", ".avi", ".mkv", ".webm",
+                                     ".jpg", ".jpeg", ".png", ".bmp", ".gif",
+                                     ".mp3", ".wav", ".aac", ".flac" };
 
-                    if (files.Length > 0 || directories.Length > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        Main.logsForm.DisplayMessage("The wallpaper path exists but is empty.", true);
-                        return false;
-                    }
+                var files = Directory.GetFiles(path)
+                                     .Where(file => validExtensions.Contains(Path.GetExtension(file).ToLower()))
+                                     .ToArray();
+
+                if (files.Length > 0)
+                {
+                    return true;
                 }
                 else
                 {
-                    Main.logsForm.DisplayMessage("The wallpaper path does not exist or is not a valid directory.", true);
-                    return false;
+                    return RejectAndLog("The wallpaper path does not contain any video, image, or music files.");
                 }
             }
             catch (Exception ex)
             {
-                Main.logsForm.LogsWriteLine($"An error occurred while checking the wallpaper path: {ex.Message}", true);
-                return false;
+                return RejectAndLog($"An error occurred while checking the wallpaper path: {ex.Message}");
             }
+        }
+
+        private static bool RejectAndLog(string message)
+        {
+            RejectWallpaperFolder();
+            //Main.logsForm.DisplayMessage(message, true);
+            Main.logsForm.LogsWriteLine(message, true);
+            return false;
+        }
+
+        private static void RejectWallpaperFolder()
+        {
+            string message = "Wallpaper Folder has been rejected";
+            Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+
+            Main.logsForm.LogsWriteLine(message, true);
         }
 
         public static bool CheckMpvPath()

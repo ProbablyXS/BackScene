@@ -68,5 +68,14 @@ namespace BackScene.Properties {
                 return ResourceManager.GetStream("Dropped", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Rejected {
+            get {
+                return ResourceManager.GetStream("Rejected", resourceCulture);
+            }
+        }
     }
 }
