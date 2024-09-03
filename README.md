@@ -2,27 +2,34 @@
 
 BackScene is a tool designed to display video wallpapers on your Windows desktop background using MPV and weebp.
 
-![GitHub Release](https://img.shields.io/github/v/release/ProbablyXS/BackScene)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ProbablyXS/BackScene/total)
-[![GitHub issues](https://img.shields.io/github/issues/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/issues)
-[![GitHub forks](https://img.shields.io/github/forks/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/network)
-[![GitHub stars](https://img.shields.io/github/stars/ProbablyXS/BackScene)](https://github.com/ProbablyXS/BackScene/stargazers)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4e662b48-062e-4a5e-95b4-bb13ee1219ac" alt="Icon" width="100"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/ProbablyXS/BackScene" alt="GitHub Release"/>
+  <img src="https://img.shields.io/github/downloads/ProbablyXS/BackScene/total" alt="GitHub Downloads"/>
+  <a href="https://github.com/ProbablyXS/BackScene/issues">
+    <img src="https://img.shields.io/github/issues/ProbablyXS/BackScene" alt="GitHub Issues"/>
+  </a>
+  <a href="https://github.com/ProbablyXS/BackScene/network">
+    <img src="https://img.shields.io/github/forks/ProbablyXS/BackScene" alt="GitHub Forks"/>
+  </a>
+  <a href="https://github.com/ProbablyXS/BackScene/stargazers">
+    <img src="https://img.shields.io/github/stars/ProbablyXS/BackScene" alt="GitHub Stars"/>
+  </a>
+</p>
 
 ## Information
 
-- **Drag and drop to change the wallpaper folder.**
+- **Drag and drop** to change the wallpaper folder.
 
 ## Showcase
 
-![image](https://github.com/user-attachments/assets/88938ef4-c028-4d37-bd5e-fd93391f24e6)
-
-![image](https://github.com/user-attachments/assets/4bbd909f-b469-4c83-8305-85724f18be56)
-
-![image](https://github.com/user-attachments/assets/ccc3fced-0f38-4898-9178-7958ab4d0d06)
-
-https://github.com/user-attachments/assets/10152caa-f5db-425b-8a3e-8a3f9ce17e8e
-
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/88938ef4-c028-4d37-bd5e-fd93391f24e6" alt="Showcase Image 1" width="300"/>
+  <img src="https://github.com/user-attachments/assets/4bbd909f-b469-4c83-8305-85724f18be56" alt="Showcase Image 2" width="300"/>
+</p>
 
 ## Features
 
