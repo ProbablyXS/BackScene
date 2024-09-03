@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Media;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BackScene.Utilities
 {
@@ -41,9 +46,6 @@ namespace BackScene.Utilities
                     }
 
                     StartMpv();
-                    SetAsWallpaper();
-
-                    Main.settingsForm.Hide();
                 }
                 catch (Exception ex)
                 {
@@ -101,17 +103,50 @@ namespace BackScene.Utilities
             return false;
         }
 
-        private static void StartMpv()
+        //// P/Invoke declarations
+        //[DllImport("user32.dll", SetLastError = true)]
+        //private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        //[DllImport("user32.dll", SetLastError = true)]
+        //private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        //[DllImport("user32.dll")]
+        //private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        //private static readonly IntPtr HWND_TOP = IntPtr.Zero;
+        //private const int SWP_NOSIZE = 0x0001;
+        //private const int SWP_NOACTIVATE = 0x0010;
+        //private const int SW_SHOW = 5;
+        //private const int MaxRetries = 20;
+        //private const int DelayMilliseconds = 500; // Adjust delay as needed
+
+        //private static async Task<IntPtr> WaitForWindowHandleAsync(string windowClass, int maxRetries, int delayMilliseconds)
+        //{
+        //    IntPtr hWnd = IntPtr.Zero;
+        //    for (int i = 0; i < maxRetries; i++)
+        //    {
+        //        hWnd = FindWindow(windowClass, null);
+        //        if (hWnd != IntPtr.Zero)
+        //            return hWnd;
+
+        //        await Task.Delay(delayMilliseconds);
+        //    }
+        //    return hWnd;
+        //}
+
+        private static async void StartMpv()
         {
-            string baseArguments = "--player-operation-mode=pseudo-gui --force-window=yes shuffle=yes --terminal=no --loop-playlist=inf --hwdec=auto --border=no --input-ipc-server=\\\\.\\pipe\\mpvsocket";
+            string baseArguments = "--player-operation-mode=pseudo-gui --osc=no --show-in-taskbar=no --terminal=no --loop-playlist=inf --hwdec=auto --border=no --input-ipc-server=\\\\.\\pipe\\mpvsocket";
             string wallpaperArgument = $" {wallpaperPath}";
             string additionalArguments = Main.settingsForm.MuteAudiocheckBox.Checked ? " --mute=yes" : string.Empty;
+            additionalArguments += Main.settingsForm.checkBox1.Checked ? " --shuffle=yes" : string.Empty;
+            additionalArguments += Main.settingsForm.checkBox2.Checked ? $" --vf-add=fps={Main.settingsForm.FPS}" : string.Empty;
 
             string trimmedWallpaperArgument = wallpaperArgument.Trim();
             string formattedWallpaperArgument = $"\"{trimmedWallpaperArgument}\"";
             string arguments = $"{baseArguments}{additionalArguments} {formattedWallpaperArgument}";
 
-            mpvProcess = new Process
+            var mpvProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -123,6 +158,30 @@ namespace BackScene.Utilities
             };
 
             mpvProcess.Start();
+            SetAsWallpaper(mpvProcess);
+
+            //// Wait for the window handle to become available
+            //IntPtr hWnd = await WaitForWindowHandleAsync("mpv", MaxRetries, DelayMilliseconds);
+
+            //if (hWnd != IntPtr.Zero)
+            //{
+            //    // Assuming the second screen is on the right side of the primary screen
+            //    var screens = Screen.AllScreens;
+            //    if (screens.Length > 1)
+            //    {
+            //        var secondaryScreen = screens[0];
+            //        var bounds = secondaryScreen.Bounds;
+
+            //        // Move and resize the window to fit the secondary screen
+            //        SetWindowPos(hWnd, HWND_TOP, bounds.X, bounds.Y, bounds.Width, bounds.Height, SWP_NOSIZE | SWP_NOACTIVATE);
+            //        ShowWindow(hWnd, SW_SHOW);
+            //    }
+            //}
+            //else
+            //{
+            //    // Handle the case where the window was not found
+            //    MessageBox.Show("Failed to find the window.");
+            //}
 
             if (Main.settingsForm.CleanMemorycheckBox.Checked)
             {
@@ -132,10 +191,88 @@ namespace BackScene.Utilities
             string message = mpvProcess.ProcessName.ToUpper() + " process [started]";
             Main.settingsForm.FadeOutLabel(message, Main.main.label4, false);
             Main.logsForm.LogsWriteLine(message, false);
+
+            Main.settingsForm.Hide();
+
         }
 
-        private static void SetAsWallpaper()
+        public static async Task SendCommandToMPV(string commandName, object[] parameters)
         {
+            string pipeName = @"\\.\pipe\mpvsocket";
+
+            using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", "mpvsocket", PipeDirection.InOut))
+            {
+                try
+                {
+                    // Connect to the pipe (waits for mpv to create the pipe if necessary)
+                    Main.logsForm.LogsWriteLine("Connecting to mpv IPC server...", false);
+                    await pipeClient.ConnectAsync();
+                    Main.logsForm.LogsWriteLine("Connected to mpv IPC server.", false);
+
+                    // Check if the command is related to mute
+                    if (commandName == "set_property" && parameters.Length > 0 && parameters[0].ToString() == "mute")
+                    {
+                        // Step 1: Get the current mute state
+                        string getMuteStateCommand = "{\"command\": [\"get_property\", \"mute\"]}\n";
+                        byte[] getMuteStateCommandBytes = Encoding.UTF8.GetBytes(getMuteStateCommand);
+                        await pipeClient.WriteAsync(getMuteStateCommandBytes, 0, getMuteStateCommandBytes.Length);
+                        await pipeClient.FlushAsync();
+
+                        // Read the response from mpv
+                        byte[] buffer = new byte[256];
+                        int bytesRead = await pipeClient.ReadAsync(buffer, 0, buffer.Length);
+                        string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        Main.logsForm.LogsWriteLine("Received response from mpv: " + response, false);
+
+                        // Parse the response to determine the current mute state
+                        bool isMuted = response.Contains("\"data\":true");
+
+                        // Step 2: Toggle the mute state based on the current state
+                        parameters[1] = !isMuted; // Set the parameter to the opposite of the current mute state
+                    }
+
+                    // Construct the JSON command with the given command name and parameters
+                    string command = $"{{\"command\": [\"{commandName}\"";
+                    foreach (var param in parameters)
+                    {
+                        if (param is string)
+                        {
+                            command += $", \"{param}\"";
+                        }
+                        else if (param is bool)
+                        {
+                            command += $", {param.ToString().ToLower()}";
+                        }
+                        else
+                        {
+                            command += $", {param}";
+                        }
+                    }
+                    command += "]}\n";
+
+                    // Write the command to mpv
+                    byte[] commandBytes = Encoding.UTF8.GetBytes(command);
+                    await pipeClient.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await pipeClient.FlushAsync();
+                    Main.logsForm.LogsWriteLine($"Sent command to mpv: {command}", false);
+
+                    // Read the response from mpv
+                    byte[] responseBuffer = new byte[256];
+                    int responseBytesRead = await pipeClient.ReadAsync(responseBuffer, 0, responseBuffer.Length);
+                    string finalResponse = Encoding.UTF8.GetString(responseBuffer, 0, responseBytesRead);
+                    Main.logsForm.LogsWriteLine("Received response from mpv: " + finalResponse, false);
+                }
+                catch (Exception ex)
+                {
+                    Main.logsForm.LogsWriteLine("An error occurred: " + ex.Message, true);
+                }
+            }
+        }
+
+
+        private static void SetAsWallpaper(Process mpvProcess)
+        {
+
             using (var wpProcess = new Process())
             {
                 wpProcess.StartInfo = new ProcessStartInfo
@@ -293,6 +430,8 @@ namespace BackScene.Utilities
                     Main.logsForm.LogsWriteLine("Error while closing mpv: " + ex.Message, true);
                 }
             }
+
+            Main._mpvController.Dispose();
 
             //Method 2
             CloseMpvIfRunning();

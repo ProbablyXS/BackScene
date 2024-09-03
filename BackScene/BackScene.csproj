@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>BackScene</RootNamespace>
     <AssemblyName>BackScene</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -74,8 +75,10 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\AnimationForms.cs" />
     <Compile Include="Utilities\ClsIni.cs" />
     <Compile Include="Utilities\MemoryCleaner.cs" />
+    <Compile Include="Utilities\MPVController.cs" />
     <Compile Include="Utilities\Processus.cs" />
     <Compile Include="Utilities\MovingForm.cs" />
     <EmbeddedResource Include="Logs.resx">
@@ -97,6 +100,7 @@
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -109,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\contextMenuStrip\Play.png" />
     <None Include="Resources\sound\Rejected.wav" />
     <None Include="Resources\sound\Dropped.wav" />
   </ItemGroup>

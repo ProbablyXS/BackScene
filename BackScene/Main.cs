@@ -1,12 +1,34 @@
 ﻿using BackScene.Utilities;
 using System;
 using System.Diagnostics;
+using System.IO.Pipes;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BackScene
 {
     public partial class Main : Form
     {
+
+        //By default borderless forms are not designed to be minimized, which means when the form’s FormBorderStyle property is set to None you will notice that clicking the application box in taskbar does not minimize the form.
+        //This can be fixed by overriding CreateParams and adding the WS_MINIMIZEBOX style to the Window and CS_DBLCLKS to the Window class styles.
+        //Simply place the following code inside your Form’s class which you want to enable the minimize functionality using the taskbar.
+        const int WS_MINIMIZEBOX = 0x20000;
+        const int CS_DBLCLKS = 0x8;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= WS_MINIMIZEBOX;
+                cp.ClassStyle |= CS_DBLCLKS;
+                return cp;
+            }
+        }
+
+        public static MPVController _mpvController;
 
         public static Main main;
         public static Settings settingsForm;
@@ -15,6 +37,8 @@ namespace BackScene
         public Main(Settings settingsFrm, Logs logsFrm)
         {
             InitializeComponent();
+
+            _mpvController = new MPVController();
 
             main = this;
             settingsForm = settingsFrm;
@@ -39,6 +63,7 @@ namespace BackScene
                 this.ShowInTaskbar = false;
                 logsForm.LogsWriteLine(Application.ProductName + " is minimized", false);
             }
+            else { AnimationForms.OpenForm(this); }
 
             if (Main.settingsForm.PlayAtStartupcheckBox.Checked) Processus.StartMpvProcess();
         }
@@ -69,13 +94,13 @@ namespace BackScene
         {
             if (settingsForm.Close_Minimizes())
             {
-                this.Hide();
+                AnimationForms.MinimizeForm(this, false);
                 Main.logsForm.LogsWriteLine(this.Name + " [Minimized]", false);
             }
             else
             {
                 Processus.CloseMpvProcess();
-                Environment.Exit(0);
+                AnimationForms.CloseForm(this);
             }
         }
 
@@ -97,6 +122,8 @@ namespace BackScene
                 settingsForm = new Settings();
             }
 
+            settingsForm.Location = this.Location;
+
             if (settingsForm.Visible)
             {
                 settingsForm.BringToFront();
@@ -113,6 +140,7 @@ namespace BackScene
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
             this.Show();
+            AnimationForms.OpenForm(this);
         }
 
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
@@ -139,7 +167,7 @@ namespace BackScene
 
         private void label3_Click(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Minimized;
+            AnimationForms.MinimizeForm(this, true);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -175,6 +203,36 @@ namespace BackScene
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Processus.CloseMpvProcess();
+        }
+
+        private void Main_Activated(object sender, EventArgs e)
+        {
+            AnimationForms.OpenForm(this);
+        }
+
+        private void playToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mpvController.SendCommandToMPV("set_property", new object[] { "pause", false });
+        }
+
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mpvController.SendCommandToMPV("set_property", new object[] { "pause", true });
+        }
+
+        private void muteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mpvController.SendCommandToMPV("set_property", new object[] { "mute", true });
+        }
+
+        private void nextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mpvController.SendCommandToMPV("playlist_next", new object[] { });
+        }
+
+        private void previousToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mpvController.SendCommandToMPV("playlist_prev", new object[] { });
         }
     }
 }

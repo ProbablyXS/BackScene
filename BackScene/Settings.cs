@@ -15,6 +15,8 @@ namespace BackScene
     {
         private bool _isRunning;
 
+        public int FPS;
+
         public static bool isFading = false;
         private const int FadeDuration = 1000;
         private const float OpacityDecrement = 1.0f / FadeDuration;
@@ -41,6 +43,14 @@ namespace BackScene
                 StartMinimizedcheckBox.Checked = iniConf.Read("start_minimized", "BackScene") == "true";
                 PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "BackScene") == "true";
                 StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
+                checkBox1.Checked = iniConf.Read("shuffle", "BackScene") == "true";
+                checkBox2.Checked = iniConf.Read("limit_fps", "BackScene") == "true";
+
+                if (iniConf.Read("fps", "BackScene") == "")
+                {
+                    iniConf.Write("fps", "60");
+                }
+                FPS = int.Parse(iniConf.Read("fps", "BackScene"));
 
                 Processus.wallpaperPath = iniConf.Read("wallpaperPath", "BackScene");
                 textBox1.Text = Processus.wallpaperPath;
@@ -127,6 +137,13 @@ namespace BackScene
 
             iniConf.Write("start_with_windows", playAtStartup, "BackScene");
             Main.logsForm.LogsWriteLine($"Start with windows [{logMessage}]", false);
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            var shuffle = checkBox1.Checked ? "true" : "false";
+            iniConf.Write("shuffle", shuffle, "BackScene");
+            Main.logsForm.LogsWriteLine($"Shuffle [{(checkBox1.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
         public static void SetStartup(string appName, string exePath, bool add)
@@ -268,7 +285,35 @@ namespace BackScene
 
         private void label2_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            AnimationForms.MinimizeForm(this, false);
+        }
+
+        private void Settings_Activated(object sender, EventArgs e)
+        {
+            AnimationForms.OpenForm(this);
+        }
+
+        private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
+        {
+            var limitFPS = checkBox2.Checked ? "true" : "false";
+            iniConf.Write("limit_fps", limitFPS, "BackScene");
+            Main.logsForm.LogsWriteLine($"Limit FPS [{(checkBox2.Checked ? "Enabled" : "Disabled")}]", false);
+        }
+
+        private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            var limitFPS = e.ClickedItem.Text;
+            iniConf.Write("fps", limitFPS, "BackScene");
+            Main.logsForm.LogsWriteLine($"Limit FPS set to [{limitFPS}]", false);
+        }
+
+        private void checkBox2_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                var screenLocation = checkBox2.PointToScreen(new Point(0, checkBox2.Height));
+                contextMenuStrip1.Show(screenLocation);
+            }
         }
     }
 }
