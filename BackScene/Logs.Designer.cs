@@ -51,6 +51,7 @@ namespace BackScene
             this.richTextBox1.Text = "";
             this.richTextBox1.Enter += new System.EventHandler(this.richTextBox1_Enter);
             this.richTextBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.richTextBox1_MouseDown);
+            this.richTextBox1.MouseWheel += this.RichTextBox1_MouseWheel;
             // 
             // Logs
             // 

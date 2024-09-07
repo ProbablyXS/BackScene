@@ -13,13 +13,13 @@ namespace BackScene
 
     public partial class Settings : Form
     {
-        private bool _isRunning;
+        public bool _isRunning;
 
         public int FPS;
 
         public static bool isFading = false;
-        private const int FadeDuration = 1000;
-        private const float OpacityDecrement = 1.0f / FadeDuration;
+        public const int FadeDuration = 1000;
+        public const float OpacityDecrement = 1.0f / FadeDuration;
 
         Clsini iniConf = new Clsini(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"config.ini"));
 
@@ -230,44 +230,86 @@ namespace BackScene
             Processus.wallpaperPath = folderPath;
 
             var message = "Wallpaper Folder has been modified";
-            FadeOutLabel(message, Main.main.label4, false);
+            _ = FadeOutLabel(message, Main.main.label4, false, true);
             Main.logsForm.LogsWriteLine(message, false);
 
         }
 
-        public async Task FadeOutLabel(string message, Label label, bool error)
+        public async Task FadeOutLabel(string message, Label label, bool error, bool sound)
         {
             if (isFading)
                 return;
 
             isFading = true;
 
-            var player = new SoundPlayer(error ? Properties.Resources.Rejected : Properties.Resources.Dropped);
-            player.Play();
+            if (sound)
+            {
+                var player = new SoundPlayer(error ? Properties.Resources.Rejected : Properties.Resources.Dropped);
+                player.Play();
+            }
 
             try
             {
-                label.Text = message;
-                label.Visible = true;
+                if (label.InvokeRequired)
+                {
+                    label.Invoke(new Action(() =>
+                    {
+                        label.Text = message;
+                        label.Visible = true;
+                    }));
+                }
+                else
+                {
+                    label.Text = message;
+                    label.Visible = true;
+                }
+
                 float opacity = 1.0f;
 
                 for (int i = 0; i < FadeDuration; i += 50)
                 {
                     opacity -= OpacityDecrement * (50.0f / FadeDuration);
                     if (opacity < 0) opacity = 0;
-                    label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
+
+                    if (label.InvokeRequired)
+                    {
+                        label.Invoke(new Action(() =>
+                        {
+                            label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
+                        }));
+                    }
+                    else
+                    {
+                        label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
+                    }
 
                     await Task.Delay(50);
                 }
 
-                label.Visible = false;
-                label.Text = "";
+                if (label.InvokeRequired)
+                {
+                    label.Invoke(new Action(() =>
+                    {
+                        label.Visible = false;
+                        label.Text = "";
+                    }));
+                }
+                else
+                {
+                    label.Visible = false;
+                    label.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                Main.logsForm.LogsWriteLine(ex.Message, true);
             }
             finally
             {
-                isFading = false; // Reset the flag when done
+                isFading = false;
             }
         }
+
 
         private void Settings_Load(object sender, EventArgs e)
         {
@@ -285,12 +327,12 @@ namespace BackScene
 
         private void label2_Click(object sender, EventArgs e)
         {
-            AnimationForms.MinimizeForm(this, false);
+            _ = AnimationForms.MinimizeForm(this, false);
         }
 
         private void Settings_Activated(object sender, EventArgs e)
         {
-            AnimationForms.OpenForm(this);
+            _ = AnimationForms.OpenForm(this);
         }
 
         private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
@@ -314,6 +356,37 @@ namespace BackScene
                 var screenLocation = checkBox2.PointToScreen(new Point(0, checkBox2.Height));
                 contextMenuStrip1.Show(screenLocation);
             }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            _ = AnimationForms.MinimizeForm(this, false);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _ = AnimationForms.MinimizeForm(this, false);
+        }
+
+        private void button_MouseAction(object sender, EventArgs e, bool isHover)
+        {
+            if (sender is Button button)
+            {
+                if (button == button1)
+                {
+                    button.BackgroundImage = isHover ? Properties.Resources.close_hover : Properties.Resources.close_normal;
+                }
+            }
+        }
+
+        private void button1_MouseHover(object sender, EventArgs e)
+        {
+            button_MouseAction(sender, e, true);
+        }
+
+        private void button1_MouseLeave(object sender, EventArgs e)
+        {
+            button_MouseAction(sender, e, false);
         }
     }
 }

@@ -3,11 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Media;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BackScene.Utilities
 {
@@ -32,7 +29,7 @@ namespace BackScene.Utilities
                     if (!CheckMpvPath())
                     {
                         string message = "An error occurred: Check the MPV directory";
-                        Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+                        _ = Main.settingsForm.FadeOutLabel(message, Main.main.label4, true, true);
                         Main.logsForm.LogsWriteLine(message, true);
                         return;
                     }
@@ -40,7 +37,7 @@ namespace BackScene.Utilities
                     if (!CheckWpPath())
                     {
                         string message = "An error occurred: Check the WP directory";
-                        Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+                        _ = Main.settingsForm.FadeOutLabel(message, Main.main.label4, true, true);
                         Main.logsForm.LogsWriteLine(message, true);
                         return;
                     }
@@ -189,8 +186,10 @@ namespace BackScene.Utilities
             }
 
             string message = mpvProcess.ProcessName.ToUpper() + " process [started]";
-            Main.settingsForm.FadeOutLabel(message, Main.main.label4, false);
+            _ = Main.settingsForm.FadeOutLabel(message, Main.main.label4, false, true);
             Main.logsForm.LogsWriteLine(message, false);
+
+            Main._mpvController = new MPVController();
 
             Main.settingsForm.Hide();
 
@@ -204,34 +203,27 @@ namespace BackScene.Utilities
             {
                 try
                 {
-                    // Connect to the pipe (waits for mpv to create the pipe if necessary)
                     Main.logsForm.LogsWriteLine("Connecting to mpv IPC server...", false);
                     await pipeClient.ConnectAsync();
                     Main.logsForm.LogsWriteLine("Connected to mpv IPC server.", false);
 
-                    // Check if the command is related to mute
                     if (commandName == "set_property" && parameters.Length > 0 && parameters[0].ToString() == "mute")
                     {
-                        // Step 1: Get the current mute state
                         string getMuteStateCommand = "{\"command\": [\"get_property\", \"mute\"]}\n";
                         byte[] getMuteStateCommandBytes = Encoding.UTF8.GetBytes(getMuteStateCommand);
                         await pipeClient.WriteAsync(getMuteStateCommandBytes, 0, getMuteStateCommandBytes.Length);
                         await pipeClient.FlushAsync();
 
-                        // Read the response from mpv
                         byte[] buffer = new byte[256];
                         int bytesRead = await pipeClient.ReadAsync(buffer, 0, buffer.Length);
                         string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                         Main.logsForm.LogsWriteLine("Received response from mpv: " + response, false);
 
-                        // Parse the response to determine the current mute state
                         bool isMuted = response.Contains("\"data\":true");
 
-                        // Step 2: Toggle the mute state based on the current state
-                        parameters[1] = !isMuted; // Set the parameter to the opposite of the current mute state
+                        parameters[1] = !isMuted;
                     }
 
-                    // Construct the JSON command with the given command name and parameters
                     string command = $"{{\"command\": [\"{commandName}\"";
                     foreach (var param in parameters)
                     {
@@ -361,7 +353,7 @@ namespace BackScene.Utilities
         private static void RejectWallpaperFolder()
         {
             string message = "Wallpaper Folder has been rejected";
-            Main.settingsForm.FadeOutLabel(message, Main.main.label4, true);
+            _ = Main.settingsForm.FadeOutLabel(message, Main.main.label4, true, true);
 
             Main.logsForm.LogsWriteLine(message, true);
         }
@@ -398,6 +390,7 @@ namespace BackScene.Utilities
                     {
                         process.Kill();
                         Main.logsForm.LogsWriteLine($"Successfully terminated process: {process.ProcessName} (ID: {process.Id})", false);
+                        Main._mpvController.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -431,10 +424,11 @@ namespace BackScene.Utilities
                 }
             }
 
-            Main._mpvController.Dispose();
-
             //Method 2
             CloseMpvIfRunning();
+
+            Main._mpvController.Dispose();
+            Main.logsForm.LogsWriteLine("Stopped MPV Controller", false);
         }
     }
 }

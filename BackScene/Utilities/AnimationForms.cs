@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,7 +12,7 @@ public static class AnimationForms
 
             while (frm.Opacity >= 0)
             {
-                await Task.Delay(8);
+                await Task.Delay(6);
 
                 if (frm.Opacity <= 1)
                 {
@@ -50,7 +49,7 @@ public static class AnimationForms
 
             while (frm.Opacity <= 1)
             {
-                await Task.Delay(8);
+                await Task.Delay(6);
 
                 if (frm.Opacity <= 1)
                 {
@@ -81,7 +80,7 @@ public static class AnimationForms
 
             while (frm.Opacity >= 0)
             {
-                await Task.Delay(8);
+                await Task.Delay(6);
 
                 if (frm.Opacity <= 1)
                 {

@@ -1,9 +1,6 @@
 ﻿using BackScene.Utilities;
 using System;
 using System.Diagnostics;
-using System.IO.Pipes;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BackScene
@@ -66,12 +63,6 @@ namespace BackScene
             else { AnimationForms.OpenForm(this); }
 
             if (Main.settingsForm.PlayAtStartupcheckBox.Checked) Processus.StartMpvProcess();
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Processus.CloseMpvProcess();
-            Environment.Exit(0);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -149,13 +140,6 @@ namespace BackScene
             Application.Exit();
         }
 
-        private void showToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Normal;
-            this.ShowInTaskbar = true;
-            this.Show();
-        }
-
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -185,14 +169,44 @@ namespace BackScene
             settingsForm.textBox1_DragEnter(sender, e);
         }
 
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Main_Activated(object sender, EventArgs e)
         {
-            OpenSettings();
+            AnimationForms.OpenForm(this);
         }
 
-        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/ProbablyXS/BackScene");
+            ClosingForm();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            AnimationForms.MinimizeForm(this, true);
+        }
+
+        public void button5_MouseHover(object sender, EventArgs e)
+        {
+            button_MouseAction(sender, e, true);
+        }
+
+        private void button5_MouseLeave(object sender, EventArgs e)
+        {
+            button_MouseAction(sender, e, false);
+        }
+
+        private void button_MouseAction(object sender, EventArgs e, bool isHover)
+        {
+            if (sender is Button button)
+            {
+                if (button == button5)
+                {
+                    button.BackgroundImage = isHover ? Properties.Resources.hide_over : Properties.Resources.hide_normal;
+                }
+                else if (button == button4)
+                {
+                    button.BackgroundImage = isHover ? Properties.Resources.close_hover : Properties.Resources.close_normal;
+                }
+            }
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
@@ -200,39 +214,62 @@ namespace BackScene
             Processus.StartMpvProcess();
         }
 
-        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Processus.CloseMpvProcess();
         }
 
-        private void Main_Activated(object sender, EventArgs e)
+        private void nextToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            AnimationForms.OpenForm(this);
+            _ = _mpvController.SendCommandToMPV("playlist_next", new object[] { });
         }
 
-        private void playToolStripMenuItem_Click(object sender, EventArgs e)
+        private void previousToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _mpvController.SendCommandToMPV("set_property", new object[] { "pause", false });
+            _ = _mpvController.SendCommandToMPV("playlist_prev", new object[] { });
         }
 
-        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void playToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _mpvController.SendCommandToMPV("set_property", new object[] { "pause", true });
+            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "pause", false });
         }
 
-        private void muteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void pauseToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _mpvController.SendCommandToMPV("set_property", new object[] { "mute", true });
+            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "pause", true });
         }
 
-        private void nextToolStripMenuItem_Click(object sender, EventArgs e)
+        private void muteToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _mpvController.SendCommandToMPV("playlist_next", new object[] { });
+            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "mute", true });
         }
 
-        private void previousToolStripMenuItem_Click(object sender, EventArgs e)
+        private void unmuteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _mpvController.SendCommandToMPV("playlist_prev", new object[] { });
+            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "mute", false });
+        }
+
+        private void showToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.ShowInTaskbar = true;
+            this.Show();
+        }
+
+        private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/ProbablyXS/BackScene");
+        }
+
+        private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Processus.CloseMpvProcess();
+            Environment.Exit(0);
         }
     }
 }
