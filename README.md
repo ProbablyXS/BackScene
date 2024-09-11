@@ -37,6 +37,38 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 - **Utilizes MPV** for video playback.
 - **Uses weebp** for WebP image decoding.
 
+##### BackScene Settings
+
+- **Show logs**: Display the console logs.
+- **Start minimized**: Start BackScene in a minimized state.
+- **Close minimizes**: Close BackScene when minimized.
+- **Clean memory**: Clean process memory for "BackScene" and "MPV".
+- **Start with windows**: Launch BackScene at Windows startup.
+
+##### MPV Settings
+
+- **Mute audio**: Mute the audio for the video running.
+- **Shuffle**: Start the video randomly from the playlist folders.
+- **Play at startup**: Start MPV when BackScene is running.
+- **Limit FPS**: Limit the frame rate of the video.
+
+##### Systray Options
+
+Right-click on the BackScene icon in the system tray to access the following options:
+
+- **Start**: Start MPV video.
+- **Stop**: Stop MPV video.
+- **Next**: Play the next video.
+- **Previous**: Play the previous video.
+- **Play**: Play the current video.
+- **Pause**: Pause the current video.
+- **Mute**: Mute the video.
+- **Unmute**: Unmute the video.
+- **Show**: Display the BackScene program.
+- **Settings**: Open the settings menu.
+- **Help**: Open the GitHub page for help.
+- **Exit**: Exit the program.
+
 ## Installation
 
 ### Prerequisites
