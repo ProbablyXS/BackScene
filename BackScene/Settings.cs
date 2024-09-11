@@ -9,6 +9,7 @@ namespace BackScene
     using System.Drawing;
     using System.IO;
     using System.Media;
+    using System.Reflection;
     using System.Windows.Forms;
 
     public partial class Settings : Form
@@ -118,27 +119,6 @@ namespace BackScene
             Main.logsForm.LogsWriteLine($"Play at startup [{logMessage}]", false);
         }
 
-        private void StartWithWindowscheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            var playAtStartup = StartWithWindowscheckBox.Checked ? "true" : "false";
-            var logMessage = StartWithWindowscheckBox.Checked ? "Enabled" : "Disabled";
-
-            string exePath = Process.GetCurrentProcess().MainModule.FileName;
-            string appName = Application.ProductName;
-
-            if (playAtStartup == "true")
-            {
-                SetStartup(appName, exePath, true);
-            }
-            else
-            {
-                SetStartup(appName, exePath, false);
-            }
-
-            iniConf.Write("start_with_windows", playAtStartup, "BackScene");
-            Main.logsForm.LogsWriteLine($"Start with windows [{logMessage}]", false);
-        }
-
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             var shuffle = checkBox1.Checked ? "true" : "false";
@@ -146,35 +126,83 @@ namespace BackScene
             Main.logsForm.LogsWriteLine($"Shuffle [{(checkBox1.Checked ? "Enabled" : "Disabled")}]", false);
         }
 
-        public static void SetStartup(string appName, string exePath, bool add)
+        public void SetStartup(string appName, string exePath, bool add)
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
-            {
-                if (key == null)
-                {
-                    throw new InvalidOperationException("Unable to access registry key.");
-                }
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
 
-                if (add)
+            if (add)
+            {
+                DialogResult result = MessageBox.Show("Do you want to set the program to high priority?", "Set Priority", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+
+                if (result == DialogResult.Yes)
                 {
-                    // Add the application to startup
-                    key.SetValue(appName, exePath);
-                    Console.WriteLine($"{appName} has been added to startup.");
+                    //METHOD #2
+                    try
+                    {
+                        string command = $"create {Assembly.GetExecutingAssembly().GetName().Name} binPath= \"{exePath}\" start= auto";
+                        ExecuteCommand("sc", command);
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 else
                 {
-                    // Remove the application from startup
-                    if (key.GetValue(appName) != null)
+                    //METHOD #1
+                    if (key == null)
                     {
-                        key.DeleteValue(appName);
-                        Console.WriteLine($"{appName} has been removed from startup.");
+                        throw new InvalidOperationException("Unable to access registry key.");
                     }
-                    else
-                    {
-                        Console.WriteLine($"{appName} was not found in startup.");
-                    }
+
+                    string command = $"cmd /c start \"\" /high \"{exePath}\"";
+
+                    key.SetValue(appName, command);
+                    Console.WriteLine($"{appName} has been added to startup with high priority.");
+                }
+            }
+            else
+            {
+                //METHOD 1
+                if (key.GetValue(appName) != null)
+                {
+                    key.DeleteValue(appName);
+                    Console.WriteLine($"{appName} has been removed from startup.");
+                }
+                else
+                {
+                    Console.WriteLine($"{appName} was not found in startup.");
                 }
 
+                //METHOD 2
+                string command = $"delete {Assembly.GetExecutingAssembly().GetName().Name} binPath= \"{exePath}\"";
+                ExecuteCommand("sc", command);
+            }
+        }
+
+        private void ExecuteCommand(string fileName, string arguments)
+        {
+            ProcessStartInfo processInfo = new ProcessStartInfo();
+            processInfo.FileName = fileName;
+            processInfo.Arguments = arguments;
+            processInfo.RedirectStandardOutput = true;
+            processInfo.RedirectStandardError = true;
+            processInfo.UseShellExecute = false;
+            processInfo.CreateNoWindow = true;
+            processInfo.Verb = "runas";
+
+            using (Process process = Process.Start(processInfo))
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+
+                process.WaitForExit();
+
+                if (process.ExitCode == 0)
+                {
+                    Main.logsForm.LogsWriteLine(output, false);
+                }
             }
         }
 
@@ -387,6 +415,33 @@ namespace BackScene
         private void button1_MouseLeave(object sender, EventArgs e)
         {
             button_MouseAction(sender, e, false);
+        }
+
+        private void StartWithWindowscheckBox_Click(object sender, EventArgs e)
+        {
+            var playAtStartup = StartWithWindowscheckBox.Checked ? "true" : "false";
+            var logMessage = StartWithWindowscheckBox.Checked ? "Enabled" : "Disabled";
+
+            string exePath = AppDomain.CurrentDomain.BaseDirectory + "BackSceneService.exe";
+            string appName = Application.ProductName;
+
+            if (playAtStartup == "true")
+            {
+                iniConf.Write("start_with_windows", playAtStartup, "BackScene");
+                SetStartup(appName, exePath, true);
+            }
+            else
+            {
+                iniConf.Write("start_with_windows", playAtStartup, "BackScene");
+                SetStartup(appName, exePath, false);
+            }
+
+            Main.logsForm.LogsWriteLine($"Start with windows [{logMessage}]", false);
+        }
+
+        private void StartWithWindowscheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

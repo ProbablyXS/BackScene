@@ -192,6 +192,7 @@ namespace BackScene
             this.StartWithWindowscheckBox.Text = "Start with windows";
             this.StartWithWindowscheckBox.UseVisualStyleBackColor = false;
             this.StartWithWindowscheckBox.CheckedChanged += new System.EventHandler(this.StartWithWindowscheckBox_CheckedChanged);
+            this.StartWithWindowscheckBox.Click += new System.EventHandler(this.StartWithWindowscheckBox_Click);
             // 
             // panel1
             // 

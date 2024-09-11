@@ -312,6 +312,22 @@ namespace BackScene.Utilities
                 return RejectAndLog("The wallpaper path is null, empty, or consists only of white-space characters.");
             }
 
+            string[] validExtensions = { ".mp4", ".avi", ".mkv", ".webm",
+                                 ".jpg", ".jpeg", ".png", ".bmp", ".gif",
+                                 ".mp3", ".wav", ".aac", ".flac" };
+
+            if (File.Exists(path))
+            {
+                if (validExtensions.Contains(Path.GetExtension(path).ToLower()))
+                {
+                    return true;
+                }
+                else
+                {
+                    return RejectAndLog("The file is not a valid video file.");
+                }
+            }
+
             if (!Directory.Exists(path))
             {
                 return RejectAndLog("The wallpaper path does not exist or is not a valid directory.");
@@ -319,10 +335,6 @@ namespace BackScene.Utilities
 
             try
             {
-                string[] validExtensions = { ".mp4", ".avi", ".mkv", ".webm",
-                                     ".jpg", ".jpeg", ".png", ".bmp", ".gif",
-                                     ".mp3", ".wav", ".aac", ".flac" };
-
                 var files = Directory.GetFiles(path)
                                      .Where(file => validExtensions.Contains(Path.GetExtension(file).ToLower()))
                                      .ToArray();
@@ -341,6 +353,7 @@ namespace BackScene.Utilities
                 return RejectAndLog($"An error occurred while checking the wallpaper path: {ex.Message}");
             }
         }
+
 
         private static bool RejectAndLog(string message)
         {
