@@ -24,6 +24,20 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 
 - **Drag and drop** to change the wallpaper folder.
 
+## [CONFIG.INI]
+- [BackScene]
+- fps=60
+- start_minimized=false
+- close_minimizes=false
+- clean_memory=false
+- start_with_windows=false
+- show_logs=false
+- limit_fps=false
+- play_at_startup=false
+- shuffle=false
+- mute_audio=false
+- wallpaperPath=
+
 ## Showcase
 
 <p align="center">
