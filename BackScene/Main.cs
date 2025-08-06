@@ -1,4 +1,5 @@
-﻿using BackScene.Utilities;
+﻿using BackScene.Properties;
+using BackScene.Utilities;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -34,35 +35,60 @@ namespace BackScene
         public Main(Settings settingsFrm, Logs logsFrm)
         {
             InitializeComponent();
-
+            contextMenuStrip2.Renderer = null;
+            foreach (Control control in base.Controls)
+            {
+                DisableTabStopAndFocus(control);
+            }
             _mpvController = new MPVController();
-
             main = this;
             settingsForm = settingsFrm;
             logsForm = logsFrm;
         }
 
+        private void DisableTabStopAndFocus(Control ctrl)
+        {
+            ctrl.TabStop = false;
+            ctrl.GotFocus += delegate (object sender, EventArgs e)
+            {
+                if (sender is Control control)
+                {
+                    control.Parent.Focus();
+                }
+            };
+            if (ctrl.Controls.Count <= 0)
+            {
+                return;
+            }
+            foreach (Control control2 in ctrl.Controls)
+            {
+                DisableTabStopAndFocus(control2);
+            }
+        }
+
         private void Main_Load(object sender, EventArgs e)
         {
-            logsForm.LogsWriteLine(Application.ProductName + " [Opened]", false);
-
-            // open logs if is true
-            if (Main.settingsForm.ShowLogscheckBox.Checked)
+            logsForm.LogsWriteLine(Application.ProductName + " [Opened]", error: false);
+            if (settingsForm.ShowLogscheckBox.Checked)
             {
-                Main.logsForm.BringToFront();
-                Main.logsForm.Show();
+                logsForm.BringToFront();
+                logsForm.Show();
             }
-
-            // start minimized
-            if (Main.settingsForm.StartMinimizedcheckBox.Checked)
+            if (settingsForm.StartMinimizedcheckBox.Checked)
             {
-                this.WindowState = FormWindowState.Minimized;
-                this.ShowInTaskbar = false;
-                logsForm.LogsWriteLine(Application.ProductName + " is minimized", false);
+                base.WindowState = FormWindowState.Minimized;
+                base.ShowInTaskbar = false;
+                Hide();
+                logsForm.LogsWriteLine(Application.ProductName + " is minimized", error: false);
             }
-            else { AnimationForms.OpenForm(this); }
-
-            if (Main.settingsForm.PlayAtStartupcheckBox.Checked) Processus.StartMpvProcess();
+            else
+            {
+                AnimationForms.OpenForm(this);
+            }
+            if (settingsForm.PlayAtStartupcheckBox.Checked)
+            {
+                Processus.StartMpvProcess();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -85,8 +111,8 @@ namespace BackScene
         {
             if (settingsForm.Close_Minimizes())
             {
-                AnimationForms.MinimizeForm(this, false);
-                Main.logsForm.LogsWriteLine(this.Name + " [Minimized]", false);
+                AnimationForms.MinimizeForm(this, minimize: false);
+                logsForm.LogsWriteLine(base.Name + " [Minimized]", error: false);
             }
             else
             {
@@ -104,34 +130,33 @@ namespace BackScene
         {
             if (Processus.CheckIfAlreadyStarted())
             {
-                Main.logsForm.DisplayMessage("The process is currently running in the background. Please close it before proceeding.", true);
+                logsForm.DisplayMessage("The process is currently running in the background. Please close it before proceeding.", error: true);
                 return;
             }
-
             if (settingsForm == null || settingsForm.IsDisposed)
             {
                 settingsForm = new Settings();
             }
-
-            settingsForm.Location = this.Location;
-
+            settingsForm.Location = base.Location;
+            AnimationForms.MinimizeForm(this, minimize: false);
             if (settingsForm.Visible)
             {
                 settingsForm.BringToFront();
+                return;
             }
-            else
-            {
-                logsForm.LogsWriteLine(settingsForm.Name + " [Opened]", false);
-                settingsForm.ShowDialog();
-            }
+            logsForm.LogsWriteLine(settingsForm.Name + " [Opened]", error: false);
+            settingsForm.ShowDialog();
         }
 
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Normal;
-            this.ShowInTaskbar = true;
-            this.Show();
-            AnimationForms.OpenForm(this);
+            if (settingsForm == null || !settingsForm.Visible)
+            {
+                base.WindowState = FormWindowState.Normal;
+                base.ShowInTaskbar = true;
+                Show();
+                AnimationForms.OpenForm(this);
+            }
         }
 
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
@@ -145,13 +170,13 @@ namespace BackScene
             if (e.Button == MouseButtons.Left)
             {
                 MovingForm.ReleaseCapture();
-                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
+                MovingForm.SendMessage(base.Handle, 161, (IntPtr)2, IntPtr.Zero);
             }
         }
 
         private void label3_Click(object sender, EventArgs e)
         {
-            AnimationForms.MinimizeForm(this, true);
+            AnimationForms.MinimizeForm(this, minimize: true);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -181,17 +206,17 @@ namespace BackScene
 
         private void button5_Click(object sender, EventArgs e)
         {
-            AnimationForms.MinimizeForm(this, true);
+            AnimationForms.MinimizeForm(this, minimize: true);
         }
 
         public void button5_MouseHover(object sender, EventArgs e)
         {
-            button_MouseAction(sender, e, true);
+            button_MouseAction(sender, e, isHover: true);
         }
 
         private void button5_MouseLeave(object sender, EventArgs e)
         {
-            button_MouseAction(sender, e, false);
+            button_MouseAction(sender, e, isHover: false);
         }
 
         private void button_MouseAction(object sender, EventArgs e, bool isHover)
@@ -200,11 +225,11 @@ namespace BackScene
             {
                 if (button == button5)
                 {
-                    button.BackgroundImage = isHover ? Properties.Resources.hide_over : Properties.Resources.hide_normal;
+                    button.BackgroundImage = (isHover ? Resources.hide_over : Resources.hide_normal);
                 }
                 else if (button == button4)
                 {
-                    button.BackgroundImage = isHover ? Properties.Resources.close_hover : Properties.Resources.close_normal;
+                    button.BackgroundImage = (isHover ? Resources.close_hover : Resources.close_normal);
                 }
             }
         }
@@ -221,39 +246,39 @@ namespace BackScene
 
         private void nextToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("playlist_next", new object[] { });
+            _mpvController.SendCommandToMPV("playlist_next", new object[0]);
         }
 
         private void previousToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("playlist_prev", new object[] { });
+            _mpvController.SendCommandToMPV("playlist_prev", new object[0]);
         }
 
         private void playToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "pause", false });
+            _mpvController.SendCommandToMPV("set_property", new object[2] { "pause", false });
         }
 
         private void pauseToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "pause", true });
+            _mpvController.SendCommandToMPV("set_property", new object[2] { "pause", true });
         }
 
         private void muteToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "mute", true });
+            _mpvController.SendCommandToMPV("set_property", new object[2] { "mute", true });
         }
 
         private void unmuteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = _mpvController.SendCommandToMPV("set_property", new object[] { "mute", false });
+            _mpvController.SendCommandToMPV("set_property", new object[2] { "mute", false });
         }
 
         private void showToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Normal;
-            this.ShowInTaskbar = true;
-            this.Show();
+            base.WindowState = FormWindowState.Normal;
+            base.ShowInTaskbar = true;
+            Show();
         }
 
         private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)

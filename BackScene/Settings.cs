@@ -1,8 +1,7 @@
-﻿using BackScene.Utilities;
-using System.Threading.Tasks;
-
-namespace BackScene
+﻿namespace BackScene
 {
+    using BackScene.Properties;
+    using BackScene.Utilities;
     using Microsoft.Win32;
     using System;
     using System.Diagnostics;
@@ -10,6 +9,8 @@ namespace BackScene
     using System.IO;
     using System.Media;
     using System.Reflection;
+    using System.ServiceProcess;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     public partial class Settings : Form
@@ -27,14 +28,26 @@ namespace BackScene
         public Settings()
         {
             InitializeComponent();
+            foreach (Control control in base.Controls)
+            {
+                DisableTabStopAndFocus(control);
+            }
+
+            DisplayComboBox.Items.Clear();
+            var screens = Screen.AllScreens;
+            for (int i = 0; i < screens.Length; i++)
+            {
+                DisplayComboBox.Items.Add($"Display {i + 1} ({screens[i].Bounds.Width}x{screens[i].Bounds.Height})");
+            }
         }
 
         public async void StartConfigCheck()
         {
-            if (_isRunning) return;
-
+            if (_isRunning)
+            {
+                return;
+            }
             _isRunning = true;
-
             while (_isRunning)
             {
                 ShowLogscheckBox.Checked = iniConf.Read("show_logs", "BackScene") == "true";
@@ -46,16 +59,15 @@ namespace BackScene
                 StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
                 checkBox1.Checked = iniConf.Read("shuffle", "BackScene") == "true";
                 checkBox2.Checked = iniConf.Read("limit_fps", "BackScene") == "true";
-
+                DisplayComboBox.SelectedIndex = Convert.ToInt32(iniConf.Read("display", "BackScene"));
+                checkBox3.Checked = iniConf.Read("pause_on_fullscreen", "BackScene") == "true";
                 if (iniConf.Read("fps", "BackScene") == "")
                 {
                     iniConf.Write("fps", "60");
                 }
                 FPS = int.Parse(iniConf.Read("fps", "BackScene"));
-
                 Processus.wallpaperPath = iniConf.Read("wallpaperPath", "BackScene");
                 textBox1.Text = Processus.wallpaperPath;
-
                 await Task.Delay(1000);
             }
         }
@@ -67,9 +79,8 @@ namespace BackScene
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            var showLogs = ShowLogscheckBox.Checked ? "true" : "false";
-            iniConf.Write("show_logs", showLogs, "BackScene");
-
+            string value = (ShowLogscheckBox.Checked ? "true" : "false");
+            iniConf.Write("show_logs", value, "BackScene");
             if (ShowLogscheckBox.Checked)
             {
                 Main.logsForm.Show();
@@ -78,139 +89,145 @@ namespace BackScene
             {
                 Main.logsForm.Hide();
             }
-
-            Main.logsForm.LogsWriteLine($"Console logs [{(ShowLogscheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+            Main.logsForm.LogsWriteLine("Console logs [" + (ShowLogscheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            var closeMinimizes = CloseMinimizescheckBox.Checked ? "true" : "false";
-            iniConf.Write("close_minimizes", closeMinimizes, "BackScene");
-            Main.logsForm.LogsWriteLine($"Close Minimizes [{(CloseMinimizescheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (CloseMinimizescheckBox.Checked ? "true" : "false");
+            iniConf.Write("close_minimizes", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Close Minimizes [" + (CloseMinimizescheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            var muteAudio = MuteAudiocheckBox.Checked ? "true" : "false";
-            iniConf.Write("mute_audio", muteAudio, "BackScene");
-            Main.logsForm.LogsWriteLine($"Audio Mute [{(MuteAudiocheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (MuteAudiocheckBox.Checked ? "true" : "false");
+            iniConf.Write("mute_audio", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Audio Mute [" + (MuteAudiocheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
-            var cleanMemory = CleanMemorycheckBox.Checked ? "true" : "false";
-            iniConf.Write("clean_memory", cleanMemory, "BackScene");
-            Main.logsForm.LogsWriteLine($"Clean Memory [{(CleanMemorycheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (CleanMemorycheckBox.Checked ? "true" : "false");
+            iniConf.Write("clean_memory", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Clean Memory [" + (CleanMemorycheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
-            var startMinimized = StartMinimizedcheckBox.Checked ? "true" : "false";
-            iniConf.Write("start_minimized", startMinimized, "BackScene");
-            Main.logsForm.LogsWriteLine($"Start Minimized [{(StartMinimizedcheckBox.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (StartMinimizedcheckBox.Checked ? "true" : "false");
+            iniConf.Write("start_minimized", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Start Minimized [" + (StartMinimizedcheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void PlayAtStartupcheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var playAtStartup = PlayAtStartupcheckBox.Checked ? "true" : "false";
-            var logMessage = PlayAtStartupcheckBox.Checked ? "Enabled" : "Disabled";
-
-            iniConf.Write("play_at_startup", playAtStartup, "BackScene");
-            Main.logsForm.LogsWriteLine($"Play at startup [{logMessage}]", false);
+            string value = (PlayAtStartupcheckBox.Checked ? "true" : "false");
+            string text = (PlayAtStartupcheckBox.Checked ? "Enabled" : "Disabled");
+            iniConf.Write("play_at_startup", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Play at startup [" + text + "]", error: false);
         }
 
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
-            var shuffle = checkBox1.Checked ? "true" : "false";
-            iniConf.Write("shuffle", shuffle, "BackScene");
-            Main.logsForm.LogsWriteLine($"Shuffle [{(checkBox1.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (checkBox1.Checked ? "true" : "false");
+            iniConf.Write("shuffle", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Shuffle [" + (checkBox1.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         public void SetStartup(string appName, string exePath, bool add)
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true);
             if (add)
             {
-                DialogResult result = MessageBox.Show("Do you want to set the program to high priority?", "Set Priority", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-
-                if (result == DialogResult.Yes)
+                if (MessageBox.Show("Do you want to set the program to high priority?", "Set Priority", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    //METHOD #2
                     try
                     {
-                        string command = $"create {Assembly.GetExecutingAssembly().GetName().Name} binPath= \"{exePath}\" start= auto";
-                        ExecuteCommand("sc", command);
+                        string arguments = "create " + Assembly.GetExecutingAssembly().GetName().Name + " binPath= \"" + exePath + "\" start= auto";
+                        ExecuteCommand("sc", arguments);
+                        return;
                     }
                     catch
                     {
-
+                        return;
                     }
                 }
-                else
+                if (registryKey == null)
                 {
-                    //METHOD #1
-                    if (key == null)
-                    {
-                        throw new InvalidOperationException("Unable to access registry key.");
-                    }
-
-                    string command = $"cmd /c start \"\" /high \"{exePath}\"";
-
-                    key.SetValue(appName, command);
-                    Console.WriteLine($"{appName} has been added to startup with high priority.");
+                    throw new InvalidOperationException("Unable to access registry key.");
                 }
+                string value = "cmd /c start \"\" /high \"" + exePath + "\"";
+                registryKey.SetValue(appName, value);
+                Console.WriteLine(appName + " has been added to startup with high priority.");
             }
             else
             {
-                //METHOD 1
-                if (key.GetValue(appName) != null)
+                if (registryKey.GetValue(appName) != null)
                 {
-                    key.DeleteValue(appName);
-                    Console.WriteLine($"{appName} has been removed from startup.");
+                    registryKey.DeleteValue(appName);
+                    Console.WriteLine(appName + " has been removed from startup.");
                 }
                 else
                 {
-                    Console.WriteLine($"{appName} was not found in startup.");
+                    Console.WriteLine(appName + " was not found in startup.");
                 }
+                string name = Assembly.GetExecutingAssembly().GetName().Name;
+                StopAndDeleteService(name, exePath);
+            }
+        }
 
-                //METHOD 2
-                string command = $"delete {Assembly.GetExecutingAssembly().GetName().Name} binPath= \"{exePath}\"";
-                ExecuteCommand("sc", command);
+        private void StopAndDeleteService(string serviceName, string exePath)
+        {
+            try
+            {
+                using (ServiceController serviceController = new ServiceController(serviceName))
+                {
+                    if (serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.Paused)
+                    {
+                        Console.WriteLine("Stopping service: " + serviceName + "...");
+                        ExecuteCommand("sc", "stop " + serviceName);
+                        serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10.0));
+                    }
+                }
+                Console.WriteLine("Deleting service: " + serviceName + "...");
+                ExecuteCommand("sc", "delete " + serviceName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
 
         private void ExecuteCommand(string fileName, string arguments)
         {
-            ProcessStartInfo processInfo = new ProcessStartInfo();
-            processInfo.FileName = fileName;
-            processInfo.Arguments = arguments;
-            processInfo.RedirectStandardOutput = true;
-            processInfo.RedirectStandardError = true;
-            processInfo.UseShellExecute = false;
-            processInfo.CreateNoWindow = true;
-            processInfo.Verb = "runas";
-
-            using (Process process = Process.Start(processInfo))
+            using (Process process = Process.Start(new ProcessStartInfo
             {
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-
+                FileName = fileName,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Verb = "runas"
+            }))
+            {
+                string message = process.StandardOutput.ReadToEnd();
+                process.StandardError.ReadToEnd();
                 process.WaitForExit();
-
                 if (process.ExitCode == 0)
                 {
-                    Main.logsForm.LogsWriteLine(output, false);
+                    Main.logsForm.LogsWriteLine(message, error: false);
                 }
             }
         }
 
+
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            this.Hide();
-            Main.logsForm.LogsWriteLine(Main.settingsForm.Name + " [closed]", false);
+            Hide();
+            Main.logsForm.LogsWriteLine(Main.settingsForm.Name + " [closed]", error: false);
         }
 
         public bool Close_Minimizes()
@@ -236,91 +253,83 @@ namespace BackScene
 
         public void textBox1_DragDrop(object sender, DragEventArgs e)
         {
-            string folderPath = "";
-
+            string text = "";
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
-                folderPath = (string)e.Data.GetData(DataFormats.Text);
+                text = (string)e.Data.GetData(DataFormats.Text);
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length > 0)
+                string[] array = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (array.Length != 0)
                 {
-                    folderPath = files[0];
+                    text = array[0];
                 }
             }
-
-            if (!Processus.CheckWallpaperPath(folderPath)) return;
-
-            iniConf.Write("wallpaperPath", folderPath, "BackScene");
-
-            Processus.wallpaperPath = folderPath;
-
-            var message = "Wallpaper Folder has been modified";
-            _ = FadeOutLabel(message, Main.main.label4, false, true);
-            Main.logsForm.LogsWriteLine(message, false);
-
+            if (Processus.CheckWallpaperPath(text))
+            {
+                iniConf.Write("wallpaperPath", text, "BackScene");
+                Processus.wallpaperPath = text;
+                string message = "Wallpaper Folder has been modified";
+                FadeOutLabel(message, Main.main.label4, error: false, sound: true);
+                Main.logsForm.LogsWriteLine(message, error: false);
+            }
         }
 
         public async Task FadeOutLabel(string message, Label label, bool error, bool sound)
         {
             if (isFading)
+            {
                 return;
-
+            }
             isFading = true;
-
             if (sound)
             {
-                var player = new SoundPlayer(error ? Properties.Resources.Rejected : Properties.Resources.Dropped);
-                player.Play();
+                new SoundPlayer(error ? Resources.Rejected : Resources.Dropped).Play();
             }
-
             try
             {
                 if (label.InvokeRequired)
                 {
-                    label.Invoke(new Action(() =>
+                    label.Invoke((Action)delegate
                     {
                         label.Text = message;
                         label.Visible = true;
-                    }));
+                    });
                 }
                 else
                 {
                     label.Text = message;
                     label.Visible = true;
                 }
-
-                float opacity = 1.0f;
-
-                for (int i = 0; i < FadeDuration; i += 50)
+                float opacity = 1f;
+                for (int i = 0; i < 1000; i += 50)
                 {
-                    opacity -= OpacityDecrement * (50.0f / FadeDuration);
-                    if (opacity < 0) opacity = 0;
-
+                    opacity -= 5.00000024E-05f;
+                    if (opacity < 0f)
+                    {
+                        opacity = 0f;
+                    }
                     if (label.InvokeRequired)
                     {
-                        label.Invoke(new Action(() =>
+                        label.Invoke((Action)delegate
                         {
-                            label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
-                        }));
+                            label.ForeColor = Color.FromArgb((int)(opacity * 255f), label.ForeColor);
+                        });
                     }
                     else
                     {
-                        label.ForeColor = Color.FromArgb((int)(opacity * 255), label.ForeColor);
+                        label.ForeColor = Color.FromArgb((int)(opacity * 255f), label.ForeColor);
                     }
-
                     await Task.Delay(50);
                 }
-
                 if (label.InvokeRequired)
                 {
-                    label.Invoke(new Action(() =>
+                    label.Invoke((Action)delegate
                     {
                         label.Visible = false;
                         label.Text = "";
-                    }));
+                    });
                 }
                 else
                 {
@@ -330,7 +339,7 @@ namespace BackScene
             }
             catch (Exception ex)
             {
-                Main.logsForm.LogsWriteLine(ex.Message, true);
+                Main.logsForm.LogsWriteLine(ex.Message, error: true);
             }
             finally
             {
@@ -338,10 +347,8 @@ namespace BackScene
             }
         }
 
-
         private void Settings_Load(object sender, EventArgs e)
         {
-
         }
 
         private void Main_MouseDown(object sender, MouseEventArgs e)
@@ -349,99 +356,146 @@ namespace BackScene
             if (e.Button == MouseButtons.Left)
             {
                 MovingForm.ReleaseCapture();
-                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
+                MovingForm.SendMessage(base.Handle, 161, (IntPtr)2, IntPtr.Zero);
             }
         }
 
         private void label2_Click(object sender, EventArgs e)
         {
-            _ = AnimationForms.MinimizeForm(this, false);
+            AnimationForms.MinimizeForm(this, minimize: false);
         }
 
         private void Settings_Activated(object sender, EventArgs e)
         {
-            _ = AnimationForms.OpenForm(this);
+            AnimationForms.OpenForm(this);
         }
 
         private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
         {
-            var limitFPS = checkBox2.Checked ? "true" : "false";
-            iniConf.Write("limit_fps", limitFPS, "BackScene");
-            Main.logsForm.LogsWriteLine($"Limit FPS [{(checkBox2.Checked ? "Enabled" : "Disabled")}]", false);
+            string value = (checkBox2.Checked ? "true" : "false");
+            iniConf.Write("limit_fps", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Limit FPS [" + (checkBox2.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            var limitFPS = e.ClickedItem.Text;
-            iniConf.Write("fps", limitFPS, "BackScene");
-            Main.logsForm.LogsWriteLine($"Limit FPS set to [{limitFPS}]", false);
+            string text = e.ClickedItem.Text;
+            iniConf.Write("fps", text, "BackScene");
+            Main.logsForm.LogsWriteLine("Limit FPS set to [" + text + "]", error: false);
         }
 
         private void checkBox2_MouseClick(object sender, MouseEventArgs e)
         {
             if (checkBox2.Checked)
             {
-                var screenLocation = checkBox2.PointToScreen(new Point(0, checkBox2.Height));
+                Point screenLocation = checkBox2.PointToScreen(new Point(0, checkBox2.Height));
                 contextMenuStrip1.Show(screenLocation);
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            _ = AnimationForms.MinimizeForm(this, false);
+            AnimationForms.MinimizeForm(this, minimize: false);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _ = AnimationForms.MinimizeForm(this, false);
+            AnimationForms.MinimizeForm(this, minimize: false);
+            Main.main.Show();
         }
 
         private void button_MouseAction(object sender, EventArgs e, bool isHover)
         {
-            if (sender is Button button)
+            if (sender is Button button && button == button1)
             {
-                if (button == button1)
-                {
-                    button.BackgroundImage = isHover ? Properties.Resources.close_hover : Properties.Resources.close_normal;
-                }
+                button.BackgroundImage = (isHover ? Resources.close_hover : Resources.close_normal);
             }
         }
 
         private void button1_MouseHover(object sender, EventArgs e)
         {
-            button_MouseAction(sender, e, true);
+            button_MouseAction(sender, e, isHover: true);
         }
 
         private void button1_MouseLeave(object sender, EventArgs e)
         {
-            button_MouseAction(sender, e, false);
+            button_MouseAction(sender, e, isHover: false);
         }
 
         private void StartWithWindowscheckBox_Click(object sender, EventArgs e)
         {
-            var playAtStartup = StartWithWindowscheckBox.Checked ? "true" : "false";
-            var logMessage = StartWithWindowscheckBox.Checked ? "Enabled" : "Disabled";
-
+            string text = (StartWithWindowscheckBox.Checked ? "true" : "false");
+            string text2 = (StartWithWindowscheckBox.Checked ? "Enabled" : "Disabled");
             string exePath = AppDomain.CurrentDomain.BaseDirectory + "BackSceneService.exe";
-            string appName = Application.ProductName;
-
-            if (playAtStartup == "true")
+            string productName = Application.ProductName;
+            if (text == "true")
             {
-                iniConf.Write("start_with_windows", playAtStartup, "BackScene");
-                SetStartup(appName, exePath, true);
+                iniConf.Write("start_with_windows", text, "BackScene");
+                SetStartup(productName, exePath, add: true);
             }
             else
             {
-                iniConf.Write("start_with_windows", playAtStartup, "BackScene");
-                SetStartup(appName, exePath, false);
+                iniConf.Write("start_with_windows", text, "BackScene");
+                SetStartup(productName, exePath, add: false);
             }
-
-            Main.logsForm.LogsWriteLine($"Start with windows [{logMessage}]", false);
+            Main.logsForm.LogsWriteLine("Start with windows [" + text2 + "]", error: false);
         }
 
-        private void StartWithWindowscheckBox_CheckedChanged(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                {
+                    string selectedPath = folderBrowserDialog.SelectedPath;
+                    if (Processus.CheckWallpaperPath(selectedPath))
+                    {
+                        iniConf.Write("wallpaperPath", selectedPath, "BackScene");
+                        Processus.wallpaperPath = selectedPath;
+                        string message = "Wallpaper Folder has been modified";
+                        FadeOutLabel(message, Main.main.label4, error: false, sound: true);
+                        Main.logsForm.LogsWriteLine(message, error: false);
+                    }
+                }
         }
+
+        private void DisableTabStopAndFocus(Control ctrl)
+        {
+            // Skip the DisplayComboBox or any other interactive control
+            if (ctrl == DisplayComboBox)
+                return;
+
+            ctrl.TabStop = false;
+            ctrl.GotFocus += delegate (object sender, EventArgs e)
+            {
+                if (sender is Control control)
+                {
+                    control.Parent.Focus();
+                }
+            };
+            if (ctrl.Controls.Count <= 0)
+            {
+                return;
+            }
+            foreach (Control control2 in ctrl.Controls)
+            {
+                DisableTabStopAndFocus(control2);
+            }
+        }
+
+
+        private void checkBox3_CheckedChanged_1(object sender, EventArgs e)
+        {
+            string value = (checkBox3.Checked ? "true" : "false");
+            iniConf.Write("pause_on_fullscreen", value, "BackScene");
+            Main.logsForm.LogsWriteLine("Shuffle [" + (checkBox3.Checked ? "Enabled" : "Disabled") + "]", error: false);
+        }
+
+        private void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int selectedIndex = DisplayComboBox.SelectedIndex;
+            iniConf.Write("display", selectedIndex.ToString(), "BackScene");
+            Main.logsForm.LogsWriteLine($"Display [{selectedIndex}] selected", error: false);
+        }
+
     }
 }

@@ -22,14 +22,13 @@ namespace BackScene
             }
             else
             {
-                MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-
         }
+
         public void LogsWriteLine(string message, bool error)
         {
-            Color color = error ? Color.Red : Color.Cyan;
-
+            Color color = (error ? Color.Red : Color.Cyan);
             Log(message, color);
         }
 
@@ -37,7 +36,10 @@ namespace BackScene
         {
             if (richTextBox1.InvokeRequired)
             {
-                richTextBox1.BeginInvoke(new Action(() => AppendText(message, color)));
+                richTextBox1.BeginInvoke((Action)delegate
+                {
+                    AppendText(message, color);
+                });
             }
             else
             {
@@ -49,21 +51,17 @@ namespace BackScene
         {
             richTextBox1.SelectionStart = richTextBox1.TextLength;
             richTextBox1.SelectionLength = 0;
-
             richTextBox1.SelectionColor = color;
             richTextBox1.AppendText(message + Environment.NewLine);
-
             richTextBox1.SelectionColor = richTextBox1.ForeColor;
             richTextBox1.ScrollToCaret();
         }
-
 
         private void Logs_FormClosing(object sender, FormClosingEventArgs e)
         {
             Main.settingsForm.ShowLogscheckBox.Checked = false;
             e.Cancel = true;
-
-            this.Hide();
+            Hide();
         }
 
         private void richTextBox1_MouseDown(object sender, MouseEventArgs e)
@@ -71,32 +69,26 @@ namespace BackScene
             if (e.Button == MouseButtons.Left)
             {
                 MovingForm.ReleaseCapture();
-                MovingForm.SendMessage(this.Handle, MovingForm.WM_NCLBUTTONDOWN, (IntPtr)MovingForm.HT_CAPTION, IntPtr.Zero);
+                MovingForm.SendMessage(base.Handle, 161, (IntPtr)2, IntPtr.Zero);
             }
         }
 
         private void richTextBox1_Enter(object sender, EventArgs e)
         {
-            //disable blinking cursor text
-            //ActiveControl = null;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        private const int WM_VSCROLL = 0x0115;
-        private const int SB_LINEDOWN = 1;
-        private const int SB_LINEUP = 0;
-
         private void RichTextBox1_MouseWheel(object sender, MouseEventArgs e)
         {
             if (e.Delta > 0)
             {
-                SendMessage(richTextBox1.Handle, WM_VSCROLL, (IntPtr)SB_LINEUP, IntPtr.Zero);
+                SendMessage(richTextBox1.Handle, 277, (IntPtr)0, IntPtr.Zero);
             }
             else if (e.Delta < 0)
             {
-                SendMessage(richTextBox1.Handle, WM_VSCROLL, (IntPtr)SB_LINEDOWN, IntPtr.Zero);
+                SendMessage(richTextBox1.Handle, 277, (IntPtr)1, IntPtr.Zero);
             }
         }
     }

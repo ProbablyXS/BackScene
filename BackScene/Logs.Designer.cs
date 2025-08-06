@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace BackScene
 {
     partial class Logs
@@ -29,17 +31,14 @@ namespace BackScene
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Logs));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BackScene.Logs));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.SuspendLayout();
-            // 
-            // richTextBox1
-            // 
+            base.SuspendLayout();
             this.richTextBox1.BackColor = System.Drawing.Color.Black;
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Font = new System.Drawing.Font("Consolas", 14.25F);
+            this.richTextBox1.Font = new System.Drawing.Font("Consolas", 14.25f);
             this.richTextBox1.ForeColor = System.Drawing.Color.Black;
             this.richTextBox1.Location = new System.Drawing.Point(0, 0);
             this.richTextBox1.Name = "richTextBox1";
@@ -49,28 +48,24 @@ namespace BackScene
             this.richTextBox1.TabIndex = 8;
             this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "";
-            this.richTextBox1.Enter += new System.EventHandler(this.richTextBox1_Enter);
-            this.richTextBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.richTextBox1_MouseDown);
-            this.richTextBox1.MouseWheel += this.RichTextBox1_MouseWheel;
-            // 
-            // Logs
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(707, 350);
-            this.Controls.Add(this.richTextBox1);
+            this.richTextBox1.Enter += new System.EventHandler(richTextBox1_Enter);
+            this.richTextBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(richTextBox1_MouseDown);
+            this.richTextBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(RichTextBox1_MouseWheel);
+            base.AutoScaleDimensions = new System.Drawing.SizeF(6f, 13f);
+            base.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            base.ClientSize = new System.Drawing.Size(707, 350);
+            base.Controls.Add(this.richTextBox1);
             this.DoubleBuffered = true;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Logs";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            base.Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            base.Name = "Logs";
+            base.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BackScene: Console Logs";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Logs_FormClosing);
-            this.ResumeLayout(false);
-
+            base.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Logs_FormClosing);
+            base.ResumeLayout(false);
         }
 
         #endregion
 
-        public System.Windows.Forms.RichTextBox richTextBox1;
+        public RichTextBox richTextBox1;
     }
 }

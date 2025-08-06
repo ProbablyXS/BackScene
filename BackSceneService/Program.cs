@@ -9,12 +9,10 @@ namespace BackSceneService
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            ServiceBase.Run(new ServiceBase[1]
             {
                 new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+            });
         }
     }
 }

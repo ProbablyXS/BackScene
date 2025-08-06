@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace BackScene
 {
     partial class Settings
@@ -27,7 +29,7 @@ namespace BackScene
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+		private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
@@ -41,6 +43,9 @@ namespace BackScene
             this.PlayAtStartupcheckBox = new System.Windows.Forms.CheckBox();
             this.StartWithWindowscheckBox = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.DisplayComboBox = new System.Windows.Forms.ComboBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -60,12 +65,13 @@ namespace BackScene
             // 
             // ShowLogscheckBox
             // 
+            this.ShowLogscheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ShowLogscheckBox.AutoSize = true;
             this.ShowLogscheckBox.BackColor = System.Drawing.Color.White;
             this.ShowLogscheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ShowLogscheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.ShowLogscheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.ShowLogscheckBox.Location = new System.Drawing.Point(31, 54);
+            this.ShowLogscheckBox.Location = new System.Drawing.Point(54, 71);
             this.ShowLogscheckBox.Name = "ShowLogscheckBox";
             this.ShowLogscheckBox.Size = new System.Drawing.Size(86, 19);
             this.ShowLogscheckBox.TabIndex = 0;
@@ -75,12 +81,13 @@ namespace BackScene
             // 
             // CloseMinimizescheckBox
             // 
+            this.CloseMinimizescheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CloseMinimizescheckBox.AutoSize = true;
             this.CloseMinimizescheckBox.BackColor = System.Drawing.Color.White;
             this.CloseMinimizescheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CloseMinimizescheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.CloseMinimizescheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.CloseMinimizescheckBox.Location = new System.Drawing.Point(31, 94);
+            this.CloseMinimizescheckBox.Location = new System.Drawing.Point(54, 111);
             this.CloseMinimizescheckBox.Name = "CloseMinimizescheckBox";
             this.CloseMinimizescheckBox.Size = new System.Drawing.Size(128, 19);
             this.CloseMinimizescheckBox.TabIndex = 1;
@@ -90,12 +97,13 @@ namespace BackScene
             // 
             // MuteAudiocheckBox
             // 
+            this.MuteAudiocheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MuteAudiocheckBox.AutoSize = true;
             this.MuteAudiocheckBox.BackColor = System.Drawing.Color.White;
             this.MuteAudiocheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MuteAudiocheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.MuteAudiocheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.MuteAudiocheckBox.Location = new System.Drawing.Point(197, 55);
+            this.MuteAudiocheckBox.Location = new System.Drawing.Point(270, 72);
             this.MuteAudiocheckBox.Name = "MuteAudiocheckBox";
             this.MuteAudiocheckBox.Size = new System.Drawing.Size(93, 19);
             this.MuteAudiocheckBox.TabIndex = 2;
@@ -106,15 +114,15 @@ namespace BackScene
             // textBox1
             // 
             this.textBox1.AllowDrop = true;
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.BackColor = System.Drawing.Color.White;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.textBox1.ForeColor = System.Drawing.Color.IndianRed;
-            this.textBox1.Location = new System.Drawing.Point(135, 164);
+            this.textBox1.Location = new System.Drawing.Point(186, 213);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(196, 16);
+            this.textBox1.Size = new System.Drawing.Size(109, 16);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "wallpaperPath";
             this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
@@ -122,12 +130,13 @@ namespace BackScene
             // 
             // CleanMemorycheckBox
             // 
+            this.CleanMemorycheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CleanMemorycheckBox.AutoSize = true;
             this.CleanMemorycheckBox.BackColor = System.Drawing.Color.White;
             this.CleanMemorycheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CleanMemorycheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.CleanMemorycheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.CleanMemorycheckBox.Location = new System.Drawing.Point(31, 114);
+            this.CleanMemorycheckBox.Location = new System.Drawing.Point(54, 131);
             this.CleanMemorycheckBox.Name = "CleanMemorycheckBox";
             this.CleanMemorycheckBox.Size = new System.Drawing.Size(107, 19);
             this.CleanMemorycheckBox.TabIndex = 4;
@@ -137,12 +146,12 @@ namespace BackScene
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.White;
             this.label1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.IndianRed;
-            this.label1.Location = new System.Drawing.Point(9, 166);
+            this.label1.Location = new System.Drawing.Point(58, 213);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(126, 15);
             this.label1.TabIndex = 5;
@@ -150,12 +159,13 @@ namespace BackScene
             // 
             // StartMinimizedcheckBox
             // 
+            this.StartMinimizedcheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.StartMinimizedcheckBox.AutoSize = true;
             this.StartMinimizedcheckBox.BackColor = System.Drawing.Color.White;
             this.StartMinimizedcheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StartMinimizedcheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.StartMinimizedcheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.StartMinimizedcheckBox.Location = new System.Drawing.Point(31, 74);
+            this.StartMinimizedcheckBox.Location = new System.Drawing.Point(54, 91);
             this.StartMinimizedcheckBox.Name = "StartMinimizedcheckBox";
             this.StartMinimizedcheckBox.Size = new System.Drawing.Size(128, 19);
             this.StartMinimizedcheckBox.TabIndex = 6;
@@ -165,12 +175,13 @@ namespace BackScene
             // 
             // PlayAtStartupcheckBox
             // 
+            this.PlayAtStartupcheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.PlayAtStartupcheckBox.AutoSize = true;
             this.PlayAtStartupcheckBox.BackColor = System.Drawing.Color.White;
             this.PlayAtStartupcheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PlayAtStartupcheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.PlayAtStartupcheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.PlayAtStartupcheckBox.Location = new System.Drawing.Point(197, 95);
+            this.PlayAtStartupcheckBox.Location = new System.Drawing.Point(270, 112);
             this.PlayAtStartupcheckBox.Name = "PlayAtStartupcheckBox";
             this.PlayAtStartupcheckBox.Size = new System.Drawing.Size(128, 19);
             this.PlayAtStartupcheckBox.TabIndex = 7;
@@ -180,23 +191,28 @@ namespace BackScene
             // 
             // StartWithWindowscheckBox
             // 
+            this.StartWithWindowscheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.StartWithWindowscheckBox.AutoSize = true;
             this.StartWithWindowscheckBox.BackColor = System.Drawing.Color.White;
             this.StartWithWindowscheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StartWithWindowscheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.StartWithWindowscheckBox.ForeColor = System.Drawing.Color.IndianRed;
-            this.StartWithWindowscheckBox.Location = new System.Drawing.Point(31, 134);
+            this.StartWithWindowscheckBox.Location = new System.Drawing.Point(54, 151);
             this.StartWithWindowscheckBox.Name = "StartWithWindowscheckBox";
             this.StartWithWindowscheckBox.Size = new System.Drawing.Size(149, 19);
             this.StartWithWindowscheckBox.TabIndex = 8;
             this.StartWithWindowscheckBox.Text = "Start with windows";
             this.StartWithWindowscheckBox.UseVisualStyleBackColor = false;
-            this.StartWithWindowscheckBox.CheckedChanged += new System.EventHandler(this.StartWithWindowscheckBox_CheckedChanged);
             this.StartWithWindowscheckBox.Click += new System.EventHandler(this.StartWithWindowscheckBox_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.DisplayComboBox);
+            this.panel1.Controls.Add(this.checkBox3);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.label5);
@@ -208,15 +224,55 @@ namespace BackScene
             this.panel1.Controls.Add(this.StartMinimizedcheckBox);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.CleanMemorycheckBox);
-            this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.MuteAudiocheckBox);
             this.panel1.Controls.Add(this.ShowLogscheckBox);
             this.panel1.Controls.Add(this.CloseMinimizescheckBox);
-            this.panel1.Location = new System.Drawing.Point(2, 2);
+            this.panel1.Location = new System.Drawing.Point(7, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(341, 188);
+            this.panel1.Size = new System.Drawing.Size(434, 248);
             this.panel1.TabIndex = 10;
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_MouseDown);
+            // 
+            // DisplayComboBox
+            // 
+            this.DisplayComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DisplayComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DisplayComboBox.FormattingEnabled = true;
+            this.DisplayComboBox.Location = new System.Drawing.Point(270, 156);
+            this.DisplayComboBox.Name = "DisplayComboBox";
+            this.DisplayComboBox.Size = new System.Drawing.Size(128, 21);
+            this.DisplayComboBox.TabIndex = 18;
+            this.DisplayComboBox.SelectedIndexChanged += new System.EventHandler(this.DisplayComboBox_SelectedIndexChanged);
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.BackColor = System.Drawing.Color.White;
+            this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox3.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
+            this.checkBox3.ForeColor = System.Drawing.Color.IndianRed;
+            this.checkBox3.Location = new System.Drawing.Point(54, 172);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(156, 19);
+            this.checkBox3.TabIndex = 17;
+            this.checkBox3.Text = "Pause on Fullscreen";
+            this.checkBox3.UseVisualStyleBackColor = false;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged_1);
+            // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.BackColor = System.Drawing.Color.White;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.ForeColor = System.Drawing.Color.IndianRed;
+            this.button2.Location = new System.Drawing.Point(304, 209);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(73, 23);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Browse";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
@@ -230,7 +286,7 @@ namespace BackScene
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.IndianRed;
-            this.button1.Location = new System.Drawing.Point(316, 11);
+            this.button1.Location = new System.Drawing.Point(401, 17);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(13, 13);
             this.button1.TabIndex = 15;
@@ -241,12 +297,13 @@ namespace BackScene
             // 
             // checkBox2
             // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox2.AutoSize = true;
             this.checkBox2.BackColor = System.Drawing.Color.White;
             this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox2.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.checkBox2.ForeColor = System.Drawing.Color.IndianRed;
-            this.checkBox2.Location = new System.Drawing.Point(197, 114);
+            this.checkBox2.Location = new System.Drawing.Point(270, 131);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(86, 19);
             this.checkBox2.TabIndex = 13;
@@ -257,13 +314,13 @@ namespace BackScene
             // 
             // label5
             // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.White;
             this.label5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label5.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.IndianRed;
-            this.label5.Location = new System.Drawing.Point(24, 35);
+            this.label5.Location = new System.Drawing.Point(47, 52);
             this.label5.Name = "label5";
             this.label5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label5.Size = new System.Drawing.Size(80, 18);
@@ -272,13 +329,13 @@ namespace BackScene
             // 
             // label4
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.White;
             this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label4.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.IndianRed;
-            this.label4.Location = new System.Drawing.Point(190, 35);
+            this.label4.Location = new System.Drawing.Point(263, 52);
             this.label4.Name = "label4";
             this.label4.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label4.Size = new System.Drawing.Size(32, 18);
@@ -287,12 +344,13 @@ namespace BackScene
             // 
             // checkBox1
             // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox1.AutoSize = true;
             this.checkBox1.BackColor = System.Drawing.Color.White;
             this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.checkBox1.ForeColor = System.Drawing.Color.IndianRed;
-            this.checkBox1.Location = new System.Drawing.Point(197, 75);
+            this.checkBox1.Location = new System.Drawing.Point(270, 92);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(72, 19);
             this.checkBox1.TabIndex = 11;
@@ -302,12 +360,12 @@ namespace BackScene
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.White;
             this.label3.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.IndianRed;
-            this.label3.Location = new System.Drawing.Point(34, 8);
+            this.label3.Location = new System.Drawing.Point(35, 11);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 19);
             this.label3.TabIndex = 11;
@@ -315,11 +373,12 @@ namespace BackScene
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.Image = global::BackScene.Properties.Resources.title;
-            this.pictureBox1.Location = new System.Drawing.Point(8, 9);
+            this.pictureBox1.Location = new System.Drawing.Point(11, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(27, 19);
+            this.pictureBox1.Size = new System.Drawing.Size(20, 19);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
@@ -371,9 +430,8 @@ namespace BackScene
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackColor = System.Drawing.Color.IndianRed;
-            this.ClientSize = new System.Drawing.Size(345, 192);
-            this.Controls.Add(this.label1);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(448, 259);
             this.Controls.Add(this.panel1);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -381,7 +439,6 @@ namespace BackScene
             this.MaximizeBox = false;
             this.Name = "Settings";
             this.Opacity = 0D;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Settings";
             this.Activated += new System.EventHandler(this.Settings_Activated);
@@ -395,32 +452,57 @@ namespace BackScene
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBox1;
-        public System.Windows.Forms.CheckBox ShowLogscheckBox;
-        public System.Windows.Forms.CheckBox CloseMinimizescheckBox;
-        public System.Windows.Forms.CheckBox MuteAudiocheckBox;
-        public System.Windows.Forms.CheckBox CleanMemorycheckBox;
-        private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.CheckBox StartMinimizedcheckBox;
-        public System.Windows.Forms.CheckBox PlayAtStartupcheckBox;
-        public System.Windows.Forms.CheckBox StartWithWindowscheckBox;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        public System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        public System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        private System.Windows.Forms.Button button1;
+        private TextBox textBox1;
+
+        public CheckBox ShowLogscheckBox;
+
+        public CheckBox CloseMinimizescheckBox;
+
+        public CheckBox MuteAudiocheckBox;
+
+        public CheckBox CleanMemorycheckBox;
+
+        private Label label1;
+
+        public CheckBox StartMinimizedcheckBox;
+
+        public CheckBox PlayAtStartupcheckBox;
+
+        public CheckBox StartWithWindowscheckBox;
+
+        private Panel panel1;
+
+        private Label label3;
+
+        private PictureBox pictureBox1;
+
+        public CheckBox checkBox1;
+
+        private Label label5;
+
+        private Label label4;
+
+        public CheckBox checkBox2;
+
+        private ContextMenuStrip contextMenuStrip1;
+
+        private ToolStripMenuItem toolStripMenuItem2;
+
+        private ToolStripMenuItem toolStripMenuItem3;
+
+        private ToolStripMenuItem toolStripMenuItem4;
+
+        private ToolStripMenuItem toolStripMenuItem5;
+
+        private Button button1;
+
+        private Button button2;
+
+        public CheckBox checkBox3;
+        public ComboBox DisplayComboBox;
     }
 }
