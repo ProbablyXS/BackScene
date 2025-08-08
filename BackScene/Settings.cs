@@ -487,7 +487,7 @@
         {
             string value = (checkBox3.Checked ? "true" : "false");
             iniConf.Write("pause_on_fullscreen", value, "BackScene");
-            Main.logsForm.LogsWriteLine("Shuffle [" + (checkBox3.Checked ? "Enabled" : "Disabled") + "]", error: false);
+            Main.logsForm.LogsWriteLine("Pause on fullscreen [" + (checkBox3.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
