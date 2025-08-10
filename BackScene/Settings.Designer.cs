@@ -66,7 +66,6 @@ namespace BackScene
             // ShowLogscheckBox
             // 
             this.ShowLogscheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ShowLogscheckBox.AutoSize = true;
             this.ShowLogscheckBox.BackColor = System.Drawing.Color.White;
             this.ShowLogscheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ShowLogscheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -82,7 +81,6 @@ namespace BackScene
             // CloseMinimizescheckBox
             // 
             this.CloseMinimizescheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseMinimizescheckBox.AutoSize = true;
             this.CloseMinimizescheckBox.BackColor = System.Drawing.Color.White;
             this.CloseMinimizescheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CloseMinimizescheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -98,7 +96,6 @@ namespace BackScene
             // MuteAudiocheckBox
             // 
             this.MuteAudiocheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.MuteAudiocheckBox.AutoSize = true;
             this.MuteAudiocheckBox.BackColor = System.Drawing.Color.White;
             this.MuteAudiocheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MuteAudiocheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -131,7 +128,6 @@ namespace BackScene
             // CleanMemorycheckBox
             // 
             this.CleanMemorycheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CleanMemorycheckBox.AutoSize = true;
             this.CleanMemorycheckBox.BackColor = System.Drawing.Color.White;
             this.CleanMemorycheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CleanMemorycheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -147,7 +143,6 @@ namespace BackScene
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.White;
             this.label1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.IndianRed;
@@ -160,7 +155,6 @@ namespace BackScene
             // StartMinimizedcheckBox
             // 
             this.StartMinimizedcheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartMinimizedcheckBox.AutoSize = true;
             this.StartMinimizedcheckBox.BackColor = System.Drawing.Color.White;
             this.StartMinimizedcheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StartMinimizedcheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -176,7 +170,6 @@ namespace BackScene
             // PlayAtStartupcheckBox
             // 
             this.PlayAtStartupcheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.PlayAtStartupcheckBox.AutoSize = true;
             this.PlayAtStartupcheckBox.BackColor = System.Drawing.Color.White;
             this.PlayAtStartupcheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PlayAtStartupcheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -192,7 +185,6 @@ namespace BackScene
             // StartWithWindowscheckBox
             // 
             this.StartWithWindowscheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartWithWindowscheckBox.AutoSize = true;
             this.StartWithWindowscheckBox.BackColor = System.Drawing.Color.White;
             this.StartWithWindowscheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StartWithWindowscheckBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -237,9 +229,11 @@ namespace BackScene
             // 
             this.DisplayComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DisplayComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DisplayComboBox.ForeColor = System.Drawing.Color.IndianRed;
             this.DisplayComboBox.FormattingEnabled = true;
             this.DisplayComboBox.Location = new System.Drawing.Point(270, 156);
             this.DisplayComboBox.Name = "DisplayComboBox";
+            this.DisplayComboBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DisplayComboBox.Size = new System.Drawing.Size(128, 21);
             this.DisplayComboBox.TabIndex = 18;
             this.DisplayComboBox.SelectedIndexChanged += new System.EventHandler(this.DisplayComboBox_SelectedIndexChanged);
@@ -247,7 +241,6 @@ namespace BackScene
             // checkBox3
             // 
             this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox3.AutoSize = true;
             this.checkBox3.BackColor = System.Drawing.Color.White;
             this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox3.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -298,7 +291,6 @@ namespace BackScene
             // checkBox2
             // 
             this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox2.AutoSize = true;
             this.checkBox2.BackColor = System.Drawing.Color.White;
             this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox2.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -315,7 +307,6 @@ namespace BackScene
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.White;
             this.label5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label5.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -330,7 +321,6 @@ namespace BackScene
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.White;
             this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label4.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -345,7 +335,6 @@ namespace BackScene
             // checkBox1
             // 
             this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
             this.checkBox1.BackColor = System.Drawing.Color.White;
             this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -361,7 +350,6 @@ namespace BackScene
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.White;
             this.label3.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.IndianRed;

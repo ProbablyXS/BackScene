@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33130.400
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackScene", "BackScene\BackScene.csproj", "{383DC785-2A34-4B6D-BB83-27EF4452537B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackSceneService", "BackSceneService\BackSceneService.csproj", "{CA6A9247-C789-4273-93F5-F3207BEA3F3E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BackSceneSetup", "BackSceneSetup\BackSceneSetup.vdproj", "{92CED7D5-474A-94B0-7CC1-81311A3CB951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,8 @@ Global
 		{CA6A9247-C789-4273-93F5-F3207BEA3F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA6A9247-C789-4273-93F5-F3207BEA3F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA6A9247-C789-4273-93F5-F3207BEA3F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92CED7D5-474A-94B0-7CC1-81311A3CB951}.Debug|Any CPU.ActiveCfg = Debug
+		{92CED7D5-474A-94B0-7CC1-81311A3CB951}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

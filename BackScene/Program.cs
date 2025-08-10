@@ -1,19 +1,22 @@
 ﻿using BackScene.Utilities;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BackScene
 {
     static class Program
     {
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // Register the exit event handler
+            if (IsAlreadyRunning())
+            {
+                // Already running — exit silently
+                return;
+            }
+
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
             Application.EnableVisualStyles();
@@ -30,7 +33,13 @@ namespace BackScene
             Application.Run(main);
         }
 
-        // Event handler for process exit
+        private static bool IsAlreadyRunning()
+        {
+            string processName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+            Process[] processes = Process.GetProcessesByName(processName);
+            return processes.Length > 1;
+        }
+
         public static void OnProcessExit(object sender, EventArgs e)
         {
             Processus.CloseMpvProcess();

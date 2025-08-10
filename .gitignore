@@ -1,3 +1,6 @@
 
 BackScene/Resources/tools/mpv/mpv.exe
 BackScene/bin/Release/tools/mpv/mpv.exe
+BackSceneSetup/Release/setup.exe
+BackSceneSetup/BackSceneSetup.vdproj
+BackSceneSetup/Release/BackScene.msi

@@ -9,7 +9,9 @@
     using System.IO;
     using System.Media;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.ServiceProcess;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Forms;
 
@@ -28,10 +30,13 @@
         public Settings()
         {
             InitializeComponent();
+
             foreach (Control control in base.Controls)
             {
                 DisableTabStopAndFocus(control);
             }
+
+            DisplayComboBox.SelectedIndexChanged -= DisplayComboBox_SelectedIndexChanged;
 
             DisplayComboBox.Items.Clear();
             var screens = Screen.AllScreens;
@@ -39,7 +44,12 @@
             {
                 DisplayComboBox.Items.Add($"Display {i + 1} ({screens[i].Bounds.Width}x{screens[i].Bounds.Height})");
             }
+
+            DisplayComboBox.SelectedIndex = Convert.ToInt32(iniConf.Read("display", "BackScene"));
+
+            DisplayComboBox.SelectedIndexChanged += DisplayComboBox_SelectedIndexChanged;
         }
+
 
         public async void StartConfigCheck()
         {
@@ -59,7 +69,10 @@
                 StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
                 checkBox1.Checked = iniConf.Read("shuffle", "BackScene") == "true";
                 checkBox2.Checked = iniConf.Read("limit_fps", "BackScene") == "true";
-                DisplayComboBox.SelectedIndex = Convert.ToInt32(iniConf.Read("display", "BackScene"));
+                if (!DisplayComboBox.DroppedDown && DisplayComboBox.SelectedIndex != -1)
+                {
+                    DisplayComboBox.SelectedIndex = Convert.ToInt32(iniConf.Read("display", "BackScene"));
+                }
                 checkBox3.Checked = iniConf.Read("pause_on_fullscreen", "BackScene") == "true";
                 if (iniConf.Read("fps", "BackScene") == "")
                 {
@@ -144,8 +157,16 @@
                 {
                     try
                     {
-                        string arguments = "create " + Assembly.GetExecutingAssembly().GetName().Name + " binPath= \"" + exePath + "\" start= auto";
+
+                        string serviceName = Assembly.GetExecutingAssembly().GetName().Name;
+                        string arguments = $"create {serviceName} binPath= \"{exePath}\" start= auto";
+
+                        // Create the service
                         ExecuteCommand("sc", arguments);
+
+                        // Start the service
+                        ExecuteCommand("sc", $"start {serviceName}");
+
                         return;
                     }
                     catch
@@ -181,8 +202,24 @@
         {
             try
             {
+                // 1. Delete the scheduled task via schtasks command
+                try
+                {
+                    string taskName = "BackSceneLauncherTask";
+                    ExecuteCommand("schtasks", $"/Delete /TN \"{taskName}\" /F");
+                    Console.WriteLine($"Scheduled task deleted: {taskName}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to delete scheduled task: {ex.Message}");
+                }
+
+
                 using (ServiceController serviceController = new ServiceController(serviceName))
                 {
+                    Console.WriteLine("Deleting service: " + serviceName + "...");
+                    ExecuteCommand("sc", "delete " + serviceName);
+
                     if (serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.Paused)
                     {
                         Console.WriteLine("Stopping service: " + serviceName + "...");
@@ -190,8 +227,6 @@
                         serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10.0));
                     }
                 }
-                Console.WriteLine("Deleting service: " + serviceName + "...");
-                ExecuteCommand("sc", "delete " + serviceName);
             }
             catch (Exception ex)
             {
@@ -490,12 +525,39 @@
             Main.logsForm.LogsWriteLine("Pause on fullscreen [" + (checkBox3.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
-        private void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private CancellationTokenSource _cts;
+        private RedBorderManager _redBorderManager = new RedBorderManager();
+
+        private async void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+            _cts = new CancellationTokenSource();
+
             int selectedIndex = DisplayComboBox.SelectedIndex;
             iniConf.Write("display", selectedIndex.ToString(), "BackScene");
             Main.logsForm.LogsWriteLine($"Display [{selectedIndex}] selected", error: false);
-        }
 
+            if (selectedIndex >= 0 && selectedIndex < Screen.AllScreens.Length)
+            {
+                _redBorderManager.Show(Screen.AllScreens[selectedIndex]);
+
+                try
+                {
+                    await Task.Delay(1200, _cts.Token);
+                    _redBorderManager.Hide();
+                }
+                catch (TaskCanceledException)
+                {
+                }
+            }
+            else
+            {
+                _redBorderManager.Hide();
+            }
+        }
     }
 }

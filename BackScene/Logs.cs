@@ -49,12 +49,18 @@ namespace BackScene
 
         private void AppendText(string message, Color color)
         {
-            richTextBox1.SelectionStart = richTextBox1.TextLength;
-            richTextBox1.SelectionLength = 0;
-            richTextBox1.SelectionColor = color;
-            richTextBox1.AppendText(message + Environment.NewLine);
-            richTextBox1.SelectionColor = richTextBox1.ForeColor;
-            richTextBox1.ScrollToCaret();
+            try
+            {
+                richTextBox1.SelectionStart = richTextBox1.TextLength;
+                richTextBox1.SelectionLength = 0;
+                richTextBox1.SelectionColor = color;
+                richTextBox1.AppendText(message + Environment.NewLine);
+                richTextBox1.SelectionColor = richTextBox1.ForeColor;
+                richTextBox1.ScrollToCaret();
+
+            }
+            catch { }
+
         }
 
         private void Logs_FormClosing(object sender, FormClosingEventArgs e)

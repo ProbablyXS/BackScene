@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32.TaskScheduler;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
@@ -104,58 +103,30 @@ namespace BackSceneService
 
             try
             {
-                using (TaskService ts = new TaskService())
+                string taskName = "BackSceneLauncherTask";
+
+                // Delete any existing task
+                RunSchtasksCommand($"/Delete /TN \"{taskName}\" /F");
+
+                // Get current logged-in user (DOMAIN\User or MACHINE\User)
+                string user = GetLoggedInUser();
+                if (string.IsNullOrEmpty(user))
                 {
-                    string taskName = "BackSceneLauncherTask";
-
-                    // Delete existing task
-                    var existingTask = ts.GetTask(taskName);
-                    if (existingTask != null)
-                    {
-                        ts.RootFolder.DeleteTask(taskName);
-                    }
-
-                    TaskDefinition td = ts.NewTask();
-                    td.RegistrationInfo.Description = "Launch BackScene.exe via Task Scheduler";
-
-                    // Trigger: when task is registered
-                    td.Triggers.Add(new RegistrationTrigger());
-
-                    // Action: run the executable
-                    td.Actions.Add(new ExecAction(exePath, null, null));
-
-                    // Retrieve currently logged-in user (e.g., "DOMAIN\\User")
-                    string user = GetLoggedInUser();
-
-                    if (string.IsNullOrEmpty(user))
-                    {
-                        File.AppendAllText(logPath, $"[{DateTime.Now}] Unable to determine the logged-in user. The task will be created with the SYSTEM user.\r\n");
-                        td.Principal.UserId = null; // SYSTEM
-                        td.Principal.LogonType = TaskLogonType.ServiceAccount;
-                        td.Principal.RunLevel = TaskRunLevel.Highest;
-                    }
-                    else
-                    {
-                        td.Principal.UserId = user;
-                        td.Principal.LogonType = TaskLogonType.InteractiveToken;
-                        td.Principal.RunLevel = TaskRunLevel.Highest;
-                        File.AppendAllText(logPath, $"[{DateTime.Now}] Logged-in user detected: {user}\r\n");
-                    }
-
-                    ts.RootFolder.RegisterTaskDefinition(taskName, td);
-
-                    var task = ts.GetTask(taskName);
-
-                    if (task != null)
-                    {
-                        task.Run();
-                        File.AppendAllText(logPath, $"[{DateTime.Now}] Task launched successfully.\r\n");
-                    }
-                    else
-                    {
-                        File.AppendAllText(logPath, $"[{DateTime.Now}] Failed to retrieve task after registration.\r\n");
-                    }
+                    // SYSTEM account
+                    RunSchtasksCommand($"/Create /TN \"{taskName}\" /SC ONCE /TR \"\\\"{exePath}\\\"\" /ST 00:00 /RL HIGHEST /F");
+                    File.AppendAllText(logPath, $"[{DateTime.Now}] Task created to run as SYSTEM.\r\n");
                 }
+                else
+                {
+                    // Interactive user
+                    RunSchtasksCommand($"/Create /TN \"{taskName}\" /SC ONCE /TR \"\\\"{exePath}\\\"\" /ST 00:00 /RL HIGHEST /F /IT /RU \"{user}\"");
+                    File.AppendAllText(logPath, $"[{DateTime.Now}] Task created for user: {user}\r\n");
+                }
+
+                // Run the task immediately
+                RunSchtasksCommand($"/Run /TN \"{taskName}\"");
+
+                File.AppendAllText(logPath, $"[{DateTime.Now}] Task launched successfully.\r\n");
             }
             catch (Exception ex)
             {
@@ -163,21 +134,54 @@ namespace BackSceneService
             }
         }
 
+        private void RunSchtasksCommand(string arguments)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "schtasks",
+                Arguments = arguments,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            using (Process proc = Process.Start(psi))
+            {
+                proc.WaitForExit();
+            }
+        }
+
         protected override void OnStop()
         {
             timer?.Stop();
-            if (currentProcess != null && !currentProcess.HasExited)
+
+            string[] targets = { "BackScene", "mpv" };
+
+            foreach (string target in targets)
             {
                 try
                 {
-                    currentProcess.Kill();
-                    currentProcess.Dispose();
+                    foreach (var proc in Process.GetProcessesByName(target))
+                    {
+                        try
+                        {
+                            proc.Kill();
+                            proc.WaitForExit(5000); // wait up to 5 seconds
+                            proc.Dispose();
+                        }
+                        catch
+                        {
+                            // Ignore failures for individual processes
+                        }
+                    }
                 }
                 catch
                 {
-                    // Ignore exceptions
+                    // Ignore top-level failures for this process name
                 }
             }
         }
+
     }
 }

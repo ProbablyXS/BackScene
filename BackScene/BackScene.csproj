@@ -47,6 +47,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -90,6 +91,7 @@
     <Compile Include="Utilities\MPVController.cs" />
     <Compile Include="Utilities\Processus.cs" />
     <Compile Include="Utilities\MovingForm.cs" />
+    <Compile Include="Utilities\RedBorderForm.cs" />
     <EmbeddedResource Include="Logs.resx">
       <DependentUpon>Logs.cs</DependentUpon>
       <SubType>Designer</SubType>

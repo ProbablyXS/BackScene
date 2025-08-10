@@ -15,7 +15,5 @@ namespace BackScene.Utilities
         public const int WM_NCLBUTTONDOWN = 0x00A1;
         public const int HT_CAPTION = 0x0002;
 
-
-
     }
 }

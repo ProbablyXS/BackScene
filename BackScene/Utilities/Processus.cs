@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -256,97 +257,30 @@ namespace BackScene.Utilities
                 // Now Move the MPV window to correct wallpaper position
                 Screen[] screens = Screen.AllScreens;
 
-                if (screenIndex < 0 || screenIndex >= screens.Length)
-                {
-                    screenIndex = 0; // fallback
-                }
+                int desktopX = Screen.AllScreens.Min(s => s.Bounds.X);
+                int desktopY = Screen.AllScreens.Min(s => s.Bounds.Y);
 
-                int screenWidth = screens[screenIndex].Bounds.Width;
-                int screenHeight = screens[screenIndex].Bounds.Height;
+                Rectangle bounds = screens[screenIndex].Bounds;
 
-                // Calculate X offset in wallpaper space:
-                int xOffset = 0;
-                for (int i = 0; i < screenIndex; i++)
-                {
-                    xOffset += screens[i].Bounds.Width;
-                }
+                // Convert to wallpaper-layer coords
+                int relX = bounds.X - desktopX;
+                int relY = bounds.Y - desktopY;
 
-                int x = xOffset;
-                int y = 0; // Assuming horizontal layout. For vertical, you'd also sum Y.
+                Console.WriteLine($"Moving MPV to X={relX}, Y={relY}, Width={bounds.Width}, Height={bounds.Height}");
 
-                Console.WriteLine($"Moving MPV to X={x}, Y={y}, Width={screenWidth}, Height={screenHeight}");
-
-                SetWindowPos(mainWindowHandle, HWND_TOP, x, y, screenWidth, screenHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+                SetWindowPos(
+                    mainWindowHandle,
+                    HWND_TOP,
+                    relX,
+                    relY,
+                    bounds.Width,
+                    bounds.Height,
+                    SWP_NOZORDER | SWP_NOACTIVATE
+                );
 
                 Console.WriteLine("MPV has been repositioned as wallpaper.");
             }
         }
-
-        //public static void SetAsWallpaper(Process mpvProcess, int screenIndex)
-        //{
-        //    // Wait for MPV window to be ready
-        //    while (mpvProcess.MainWindowHandle == IntPtr.Zero && !mpvProcess.HasExited)
-        //    {
-        //        Thread.Sleep(100);
-        //    }
-        //    if (mpvProcess.HasExited)
-        //    {
-        //        Console.WriteLine("MPV exited before window handle was available.");
-        //        return;
-        //    }
-
-        //    IntPtr mainWindowHandle = mpvProcess.MainWindowHandle;
-
-        //    // Run wp-headless refresh or any wallpaper embedding tool you are using
-        //    Process process2 = new Process();
-        //    process2.StartInfo = new ProcessStartInfo
-        //    {
-        //        FileName = refreshPath,
-        //        Arguments = $"0x{mainWindowHandle.ToInt32():X}",
-        //        UseShellExecute = false,
-        //        RedirectStandardOutput = true,
-        //        RedirectStandardError = true,
-        //        CreateNoWindow = true
-        //    };
-        //    process2.Start();
-
-        //    // Read output and wait
-        //    string output = process2.StandardOutput.ReadToEnd();
-        //    string error = process2.StandardError.ReadToEnd();
-        //    process2.WaitForExit();
-
-        //    if (!string.IsNullOrEmpty(output))
-        //        Console.WriteLine("wp-headless output: " + output);
-        //    if (!string.IsNullOrEmpty(error))
-        //        Console.WriteLine("wp-headless error: " + error);
-
-        //    // Now Move the MPV window to correct wallpaper position
-        //    Screen[] screens = Screen.AllScreens;
-
-        //    if (screenIndex < 0 || screenIndex >= screens.Length)
-        //    {
-        //        screenIndex = 0; // fallback
-        //    }
-
-        //    int screenWidth = screens[screenIndex].Bounds.Width;
-        //    int screenHeight = screens[screenIndex].Bounds.Height;
-
-        //    // Calculate X offset in wallpaper space:
-        //    int xOffset = 0;
-        //    for (int i = 0; i < screenIndex; i++)
-        //    {
-        //        xOffset += screens[i].Bounds.Width;
-        //    }
-
-        //    int x = xOffset;
-        //    int y = 0; // Assuming horizontal layout. For vertical, you'd also sum Y.
-
-        //    Console.WriteLine($"Moving MPV to X={x}, Y={y}, Width={screenWidth}, Height={screenHeight}");
-
-        //    SetWindowPos(mainWindowHandle, HWND_TOP, x, y, screenWidth, screenHeight, SWP_NOZORDER | SWP_NOACTIVATE);
-
-        //    Console.WriteLine("MPV has been repositioned as wallpaper.");
-        //}
 
         public static bool CheckWallpaperPath(string path)
         {
