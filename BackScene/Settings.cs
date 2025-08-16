@@ -9,7 +9,6 @@
     using System.IO;
     using System.Media;
     using System.Reflection;
-    using System.Runtime.InteropServices;
     using System.ServiceProcess;
     using System.Threading;
     using System.Threading.Tasks;

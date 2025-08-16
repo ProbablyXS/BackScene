@@ -222,36 +222,47 @@ namespace BackScene.Utilities
                     CreateNoWindow = true
                 };
                 process.Start();
-                Process process2 = new Process();
-                process2.StartInfo = new ProcessStartInfo
+                //Process process2 = new Process();
+                //process2.StartInfo = new ProcessStartInfo
+                //{
+                //    FileName = refreshPath,
+                //    Arguments = $"0x{mainWindowHandle.ToInt32():X}",
+                //    UseShellExecute = false,
+                //    RedirectStandardOutput = true,
+                //    RedirectStandardError = true,
+                //    CreateNoWindow = true
+                //};
+                //process2.Start();
+                //try
+                //{
+                //    string text = process2.StandardOutput.ReadToEnd();
+                //    string text2 = process2.StandardError.ReadToEnd();
+                //    process2.WaitForExit();
+                //    if (!string.IsNullOrEmpty(text))
+                //    {
+                //        Console.WriteLine("wp-headless output: " + text);
+                //    }
+                //    if (!string.IsNullOrEmpty(text2))
+                //    {
+                //        Console.WriteLine("wp-headless error: " + text2);
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Main.logsForm.LogsWriteLine("An error has occurred with " + process2.ProcessName.ToUpper() + " " + ex.Message, error: true);
+                //    return;
+                //}
+
+                bool success = DesktopIntegration.IntegrateWindowIntoWorkerW(mainWindowHandle);
+                if (success)
                 {
-                    FileName = refreshPath,
-                    Arguments = $"0x{mainWindowHandle.ToInt32():X}",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
-                process2.Start();
-                try
-                {
-                    string text = process2.StandardOutput.ReadToEnd();
-                    string text2 = process2.StandardError.ReadToEnd();
-                    process2.WaitForExit();
-                    if (!string.IsNullOrEmpty(text))
-                    {
-                        Console.WriteLine("wp-headless output: " + text);
-                    }
-                    if (!string.IsNullOrEmpty(text2))
-                    {
-                        Console.WriteLine("wp-headless error: " + text2);
-                    }
+                    Console.WriteLine("Fenêtre intégrée avec succès dans WorkerW.");
                 }
-                catch (Exception ex)
+                else
                 {
-                    Main.logsForm.LogsWriteLine("An error has occurred with " + process2.ProcessName.ToUpper() + " " + ex.Message, error: true);
-                    return;
+                    Console.WriteLine("Échec de l'intégration.");
                 }
+
                 Main.logsForm.LogsWriteLine(mpvProcess.ProcessName.ToUpper() + " has been set in background", error: false);
 
                 // Now Move the MPV window to correct wallpaper position

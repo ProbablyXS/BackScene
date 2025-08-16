@@ -92,6 +92,7 @@
     <Compile Include="Utilities\Processus.cs" />
     <Compile Include="Utilities\MovingForm.cs" />
     <Compile Include="Utilities\RedBorderForm.cs" />
+    <Compile Include="Utilities\Refresh.cs" />
     <EmbeddedResource Include="Logs.resx">
       <DependentUpon>Logs.cs</DependentUpon>
       <SubType>Designer</SubType>
