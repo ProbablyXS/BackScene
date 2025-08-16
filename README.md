@@ -25,7 +25,8 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 - **Drag and drop** to change the wallpaper folder.
 
 ## [CONFIG.INI]
-- [BackScene]
+
+[BackScene]
 - fps=60
 - start_minimized=false
 - close_minimizes=false
@@ -37,6 +38,7 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 - shuffle=false
 - mute_audio=false
 - wallpaperPath=
+
 
 ## Showcase
 
@@ -87,7 +89,7 @@ Right-click on the BackScene icon in the system tray to access the following opt
 
 ### Prerequisites
 
-- **Windows 10** (Tested environment)
+- **Windows 11** (Tested environment)
 - [MPV](https://mpv.io/)
 - [weebp](https://github.com/Francesco149/weebp)
 
