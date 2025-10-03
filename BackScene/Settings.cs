@@ -59,27 +59,37 @@
             _isRunning = true;
             while (_isRunning)
             {
+                //[BackScene]
                 ShowLogscheckBox.Checked = iniConf.Read("show_logs", "BackScene") == "true";
                 CloseMinimizescheckBox.Checked = iniConf.Read("close_minimizes", "BackScene") == "true";
-                MuteAudiocheckBox.Checked = iniConf.Read("mute_audio", "BackScene") == "true";
+
                 CleanMemorycheckBox.Checked = iniConf.Read("clean_memory", "BackScene") == "true";
                 StartMinimizedcheckBox.Checked = iniConf.Read("start_minimized", "BackScene") == "true";
-                PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "BackScene") == "true";
+
                 StartWithWindowscheckBox.Checked = iniConf.Read("start_with_windows", "BackScene") == "true";
-                checkBox1.Checked = iniConf.Read("shuffle", "BackScene") == "true";
-                checkBox2.Checked = iniConf.Read("limit_fps", "BackScene") == "true";
+
                 if (!DisplayComboBox.DroppedDown && DisplayComboBox.SelectedIndex != -1)
                 {
                     DisplayComboBox.SelectedIndex = Convert.ToInt32(iniConf.Read("display", "BackScene"));
                 }
-                checkBox3.Checked = iniConf.Read("pause_on_fullscreen", "BackScene") == "true";
-                if (iniConf.Read("fps", "BackScene") == "")
+
+                Processus.wallpaperPath = iniConf.Read("wallpaperPath", "BackScene");
+                textBox1.Text = Processus.wallpaperPath;
+
+                //[Mpv]
+                MuteAudiocheckBox.Checked = iniConf.Read("mute_audio", "Mpv") == "true";
+                PlayAtStartupcheckBox.Checked = iniConf.Read("play_at_startup", "Mpv") == "true";
+                checkBox1.Checked = iniConf.Read("shuffle", "Mpv") == "true";
+                checkBox2.Checked = iniConf.Read("limit_fps", "Mpv") == "true";
+                checkBox4.Checked = iniConf.Read("hardware_acceleration", "Mpv") == "true";
+                checkBox3.Checked = iniConf.Read("pause_on_fullscreen", "Mpv") == "true";
+                if (iniConf.Read("fps", "Mpv") == "")
                 {
                     iniConf.Write("fps", "60");
                 }
-                FPS = int.Parse(iniConf.Read("fps", "BackScene"));
-                Processus.wallpaperPath = iniConf.Read("wallpaperPath", "BackScene");
-                textBox1.Text = Processus.wallpaperPath;
+                FPS = int.Parse(iniConf.Read("fps", "Mpv"));
+
+
                 await Task.Delay(1000);
             }
         }
@@ -114,7 +124,7 @@
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             string value = (MuteAudiocheckBox.Checked ? "true" : "false");
-            iniConf.Write("mute_audio", value, "BackScene");
+            iniConf.Write("mute_audio", value, "Mpv");
             Main.logsForm.LogsWriteLine("Audio Mute [" + (MuteAudiocheckBox.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
@@ -136,14 +146,14 @@
         {
             string value = (PlayAtStartupcheckBox.Checked ? "true" : "false");
             string text = (PlayAtStartupcheckBox.Checked ? "Enabled" : "Disabled");
-            iniConf.Write("play_at_startup", value, "BackScene");
+            iniConf.Write("play_at_startup", value, "Mpv");
             Main.logsForm.LogsWriteLine("Play at startup [" + text + "]", error: false);
         }
 
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             string value = (checkBox1.Checked ? "true" : "false");
-            iniConf.Write("shuffle", value, "BackScene");
+            iniConf.Write("shuffle", value, "Mpv");
             Main.logsForm.LogsWriteLine("Shuffle [" + (checkBox1.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
@@ -407,14 +417,14 @@
         private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
         {
             string value = (checkBox2.Checked ? "true" : "false");
-            iniConf.Write("limit_fps", value, "BackScene");
+            iniConf.Write("limit_fps", value, "Mpv");
             Main.logsForm.LogsWriteLine("Limit FPS [" + (checkBox2.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
         private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             string text = e.ClickedItem.Text;
-            iniConf.Write("fps", text, "BackScene");
+            iniConf.Write("fps", text, "Mpv");
             Main.logsForm.LogsWriteLine("Limit FPS set to [" + text + "]", error: false);
         }
 
@@ -477,20 +487,38 @@
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.CheckFileExists = false;
+                dialog.ValidateNames = false;
+                dialog.FileName = "Select Folder or File";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    string selectedPath = folderBrowserDialog.SelectedPath;
+                    string selectedPath;
+                    if (Path.GetFileName(dialog.FileName) == "Select Folder or File")
+                    {
+                        // User picked a folder
+                        selectedPath = Path.GetDirectoryName(dialog.FileName);
+                    }
+                    else
+                    {
+                        // User picked a file
+                        selectedPath = dialog.FileName;
+                    }
+
                     if (Processus.CheckWallpaperPath(selectedPath))
                     {
                         iniConf.Write("wallpaperPath", selectedPath, "BackScene");
                         Processus.wallpaperPath = selectedPath;
-                        string message = "Wallpaper Folder has been modified";
+                        string message = "Wallpaper path has been modified";
                         FadeOutLabel(message, Main.main.label4, error: false, sound: true);
                         Main.logsForm.LogsWriteLine(message, error: false);
                     }
                 }
+            }
         }
+
 
         private void DisableTabStopAndFocus(Control ctrl)
         {
@@ -520,7 +548,7 @@
         private void checkBox3_CheckedChanged_1(object sender, EventArgs e)
         {
             string value = (checkBox3.Checked ? "true" : "false");
-            iniConf.Write("pause_on_fullscreen", value, "BackScene");
+            iniConf.Write("pause_on_fullscreen", value, "Mpv");
             Main.logsForm.LogsWriteLine("Pause on fullscreen [" + (checkBox3.Checked ? "Enabled" : "Disabled") + "]", error: false);
         }
 
@@ -557,6 +585,14 @@
             {
                 _redBorderManager.Hide();
             }
+        }
+
+        private void checkBox4_CheckedChanged_1(object sender, EventArgs e)
+        {
+            string value = (checkBox4.Checked ? "true" : "false");
+            string text = (checkBox4.Checked ? "Enabled" : "Disabled");
+            iniConf.Write("hardware_acceleration", value, "Mpv");
+            Main.logsForm.LogsWriteLine("Hardware acceleration [" + text + "]", error: false);
         }
     }
 }

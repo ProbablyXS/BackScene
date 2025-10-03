@@ -213,28 +213,41 @@ namespace BackScene.Utilities
             return "Unknown";
         }
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsZoomed(IntPtr hWnd);
+
         private bool IsFullscreenAppRunning()
         {
             IntPtr foregroundWindow = GetForegroundWindow();
             if (foregroundWindow == IntPtr.Zero)
-            {
                 return false;
-            }
+
             GetWindowRect(foregroundWindow, out var lpRect);
-            int width = Screen.PrimaryScreen.Bounds.Width;
-            int height = Screen.PrimaryScreen.Bounds.Height;
+
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
             GetWindowThreadProcessId(foregroundWindow, out var processId);
-            string value = Process.GetProcessById((int)processId).ProcessName.ToLower();
-            if (new string[4] { "explorer", "taskmgr", "mpvcontroller", "mpv" }.Contains(value))
-            {
+            string processName = Process.GetProcessById((int)processId).ProcessName.ToLower();
+
+            if (new string[] { "explorer", "taskmgr", "mpvcontroller", "mpv" }.Contains(processName))
                 return false;
-            }
-            if (lpRect.Left == 0 && lpRect.Top == 0 && lpRect.Right == width)
-            {
-                return lpRect.Bottom == height;
-            }
+
+            if (IsZoomed(foregroundWindow))
+                return true;
+
+            if (lpRect.Left == 0 && lpRect.Top == 0 && lpRect.Right == screenWidth && lpRect.Bottom == screenHeight)
+                return true;
+
+            double widthRatio = (double)(lpRect.Right - lpRect.Left) / screenWidth;
+            double heightRatio = (double)(lpRect.Bottom - lpRect.Top) / screenHeight;
+            if (widthRatio >= 0.95 && heightRatio >= 0.95)
+                return true;
+
             return false;
         }
+
 
         private async Task MonitorFullscreenAppsAsync(CancellationToken cancellationToken)
         {
@@ -264,6 +277,7 @@ namespace BackScene.Utilities
                 Main.logsForm.LogsWriteLine("An error occurred while monitoring fullscreen apps: " + ex.Message, error: true);
             }
         }
+
 
         public void Dispose()
         {

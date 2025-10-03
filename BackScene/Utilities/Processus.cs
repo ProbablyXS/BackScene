@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace BackScene.Utilities
 {
@@ -32,7 +33,7 @@ namespace BackScene.Utilities
 
         public static string wpPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tools\\weebp\\wp.exe");
 
-        public static string refreshPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tools\\weebp\\refresh.exe");
+        //public static string refreshPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tools\\weebp\\refresh.exe");
 
         public static string wallpaperPath;
 
@@ -123,7 +124,14 @@ namespace BackScene.Utilities
             text2 += (Main.settingsForm.checkBox2.Checked ? $" --vf-add=fps={Main.settingsForm.FPS}" : string.Empty);
             string text3 = text.Trim();
             string text4 = "\"" + text3 + "\"";
-            string arguments = "--player-operation-mode=pseudo-gui --fullscreen --osc=no --show-in-taskbar=no --terminal=no --loop-playlist=inf --hwdec=auto --border=no --input-ipc-server=\\\\.\\pipe\\mpvsocket" + text2 + " " + text4;
+            string arguments = $"--player-operation-mode=pseudo-gui --fullscreen --osc=no --show-in-taskbar=no --terminal=no --loop-playlist=inf --hwdec={(Main.settingsForm.checkBox4.Checked ? "auto" : "no")} --border=no --input-ipc-server=\\\\.\\pipe\\mpvsocket" + text2 + " " + text4;
+            string mpvConfPath = Path.Combine(Path.GetDirectoryName(mpvPath), "mpv.conf");
+
+            if (File.Exists(mpvConfPath))
+            {
+                arguments = $"\"{mpvConfPath}\" " + arguments;
+            }
+
             Process process = new Process();
             process.StartInfo = new ProcessStartInfo
             {
