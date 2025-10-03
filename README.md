@@ -27,17 +27,23 @@ BackScene is a tool designed to display video wallpapers on your Windows desktop
 ## [CONFIG.INI]
 
 [BackScene]
-- fps=60
-- start_minimized=false
-- close_minimizes=false
-- clean_memory=false
-- start_with_windows=false
+- display=0
+- clean_memory=true
 - show_logs=false
-- limit_fps=false
-- play_at_startup=false
-- shuffle=false
-- mute_audio=false
-- wallpaperPath=
+- start_minimized=true
+- close_minimizes=true
+- start_with_windows=true
+- wallpaperPath=C:\Users\Admin\Videos\wallpapers\zidpVl1rabzWFWk_Yae Miko 4K Live Wallpaper.mp4
+
+[Mpv]
+- mute_audio=true
+- shuffle=true
+- play_at_startup=true
+- limit_fps=true
+- fps=30
+- hardware_acceleration=true
+- pause_on_fullscreen=true
+
 
 
 ## Showcase
