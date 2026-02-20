@@ -105,3 +105,51 @@ Right-click on the BackScene icon in the system tray to access the following opt
 
    ```bash
    git clone https://github.com/yourusername/BackScene.git
+
+
+## Crossfade Script (Optional)
+
+You can enhance your wallpapers with a smooth **fade in/out + zoom + blur** effect using MPV scripts. Place the script in the `BackScene/tools/mpv/scripts/` folder.
+
+### crossfade_clean.lua
+
+```lua
+-- crossfade_clean.lua
+
+local fade_duration = 0.5
+local zoom_factor = 1.03
+local blur_strength = 1
+
+local function apply_vf()
+    local duration = mp.get_property_number("duration")
+    if not duration then return end
+
+    -- Clear existing video filters
+    mp.commandv("vf", "clr")
+
+    -- Calculate fade out start time
+    local fade_out_start = duration - fade_duration
+
+    -- Build filter chain
+    local vf_str = string.format(
+        "fade=t=in:st=0:d=%f,fade=t=out:st=%f:d=%f,scale=iw*%f:ih*%f,boxblur=%d:%d",
+        fade_duration,
+        fade_out_start,
+        fade_duration,
+        zoom_factor,
+        zoom_factor,
+        blur_strength,
+        blur_strength
+    )
+
+    -- Apply filters
+    mp.commandv("vf", "add", vf_str)
+    mp.msg.info("Filtres appliqués proprement")
+end
+
+-- Apply filters when a file is loaded
+mp.register_event("file-loaded", function()
+    mp.add_timeout(0.2, apply_vf)
+end)
+
+mp.msg.info("crossfade_clean.lua actif")
