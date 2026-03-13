@@ -115,41 +115,48 @@ You can enhance your wallpapers with a smooth **fade in/out + zoom + blur** effe
 
 ```lua
 -- crossfade_clean.lua
-
 local fade_duration = 0.5
 local zoom_factor = 1.03
-local blur_strength = 1
+local blur_sigma = 0.8  -- gblur sigma, plus propre que boxblur
 
 local function apply_vf()
+    -- Guard: ne rien faire si pas de piste vidéo
+    local vid = mp.get_property("vid")
+    if not vid or vid == "no" then return end
+
     local duration = mp.get_property_number("duration")
-    if not duration then return end
+    if not duration or duration <= fade_duration * 2 then return end
 
-    -- Clear existing video filters
-    mp.commandv("vf", "clr")
-
-    -- Calculate fade out start time
     local fade_out_start = duration - fade_duration
 
-    -- Build filter chain
+    -- Scale en entier pour éviter les artefacts de dimension impaire
+    -- on utilise trunc(iw*zoom) pour rester sur des valeurs paires
     local vf_str = string.format(
-        "fade=t=in:st=0:d=%f,fade=t=out:st=%f:d=%f,scale=iw*%f:ih*%f,boxblur=%d:%d",
+        "scale=trunc(iw*%f/2)*2:trunc(ih*%f/2)*2," ..
+        "gblur=sigma=%f," ..
+        "fade=t=in:st=0:d=%f:alpha=0," ..
+        "fade=t=out:st=%f:d=%f:alpha=0",
+        zoom_factor, zoom_factor,
+        blur_sigma,
         fade_duration,
-        fade_out_start,
-        fade_duration,
-        zoom_factor,
-        zoom_factor,
-        blur_strength,
-        blur_strength
+        fade_out_start, fade_duration
     )
 
-    -- Apply filters
-    mp.commandv("vf", "add", vf_str)
-    mp.msg.info("Filtres appliqués proprement")
+    -- "vf set" remplace tout d'un coup, sans besoin de clr séparé
+    local ok, err = pcall(function()
+        mp.commandv("vf", "set", vf_str)
+    end)
+
+    if ok then
+        mp.msg.info("Filtres appliqués: " .. vf_str)
+    else
+        mp.msg.warn("Échec application filtres: " .. tostring(err))
+    end
 end
 
--- Apply filters when a file is loaded
 mp.register_event("file-loaded", function()
-    mp.add_timeout(0.2, apply_vf)
+    -- 0.5s de délai pour laisser mpv initialiser la piste vidéo
+    mp.add_timeout(0.5, apply_vf)
 end)
 
 mp.msg.info("crossfade_clean.lua actif")
